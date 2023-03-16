@@ -1,6 +1,5 @@
 package com.project.chamong.community.service;
 
-import com.project.chamong.community.entity.Like;
 import com.project.chamong.community.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

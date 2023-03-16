@@ -1,27 +1,28 @@
 package com.project.chamong.camping.mapper;
 
-import com.project.chamong.camping.dto.CampingApiDto.response;
+import com.project.chamong.camping.dto.CampingApiDto;
 import com.project.chamong.camping.entity.Content;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
+
+import org.mapstruct.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-03-15T22:13:36+0900",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 11.0.18 (Azul Systems, Inc.)"
+    date = "2023-03-16T10:35:31+0900",
+    comments = "version: 1.5.3.Final, compiler: javac, environment: Java 11.0.18 (Azul Systems, Inc.)"
 )
 @Component
 public class CampingApiMapperImpl implements CampingApiMapper {
-
     @Override
-    public List<response> campingReponses(List<Content> contents) {
+    public List<CampingApiDto.response> campingReponses(List<Content> contents) {
         if ( contents == null ) {
             return null;
         }
 
-        List<response> list = new ArrayList<response>( contents.size() );
+        List<CampingApiDto.response> list = new ArrayList<CampingApiDto.response>( contents.size() );
         for ( Content content : contents ) {
             list.add( contentToresponse( content ) );
         }
@@ -29,7 +30,7 @@ public class CampingApiMapperImpl implements CampingApiMapper {
         return list;
     }
 
-    protected response contentToresponse(Content content) {
+    protected CampingApiDto.response contentToresponse(Content content) {
         if ( content == null ) {
             return null;
         }
@@ -88,7 +89,7 @@ public class CampingApiMapperImpl implements CampingApiMapper {
         posblFcltyCl = content.getPosblFcltyCl();
         lctCl = content.getLctCl();
 
-        response response = new response( facltNm, lineIntro, intro, themaEnvrnCl, mapX, mapY, addr1, tel, homepage, resveCl, doNm, manageSttus, induty, firstImageUrl, createdtime, modifiedtime, featureNm, brazierCl, glampInnerFclty, caravInnerFclty, sbrsCl, animalCmgCl, exprnProgrmAt, exprnProgrm, posblFcltyCl, lctCl );
+        CampingApiDto.response response = new CampingApiDto.response( facltNm, lineIntro, intro, themaEnvrnCl, mapX, mapY, addr1, tel, homepage, resveCl, doNm, manageSttus, induty, firstImageUrl, createdtime, modifiedtime, featureNm, brazierCl, glampInnerFclty, caravInnerFclty, sbrsCl, animalCmgCl, exprnProgrmAt, exprnProgrm, posblFcltyCl, lctCl );
 
         return response;
     }
