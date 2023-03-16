@@ -1,5 +1,6 @@
 package com.project.chamong.community.entity;
 
+import com.project.chamong.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,16 +13,20 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Data
-public class Like {
+public class ArticleLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name= "community_id")
-    private Community community;
+    @JoinColumn(name = "article_id")
+    private Article article;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-//     @ManyToOne(fetch = FetchType.LAZY)
-//     @JoinColumn(name = "member_id")
-//     private Member member;
+    public ArticleLike (Article article, Member member) {
+        this.article = article;
+        this.member = member;
+    }
 }
