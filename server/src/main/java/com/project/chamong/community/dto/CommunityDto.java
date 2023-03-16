@@ -1,6 +1,6 @@
 package com.project.chamong.community.dto;
 
-import com.project.chamong.community.entity.Community;
+import com.project.chamong.community.entity.Article;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,15 +23,15 @@ public class CommunityDto {
     private LocalDateTime updateAt;
     private boolean like;
 
-    public CommunityDto(final Community entity){
+    public CommunityDto(final Article entity){
         this.communityId = entity.getCommunityId();
         this.content = entity.getContent();
         this.title = entity.getTitle();
         this.articleImg = entity.getArticleImg();
     }
 
-    public Community toEntity(){
-        return Community.builder()
+    public Article toEntity(){
+        return Article.builder()
                 .communityId(communityId)
                 .title(title)
                 .content(content)

@@ -12,13 +12,13 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Data
-public class Like {
+public class ArticleLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name= "community_id")
-    private Community community;
+    private Article article;
 
 
 //     @ManyToOne(fetch = FetchType.LAZY)

@@ -31,14 +31,14 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_id")
-    private Community community;
+    private Article article;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "member_id")
 //    private Member member;
 
     public void update(String comment){
-        this.content = community.getContent();
+        this.content = article.getContent();
         this.updateAt = LocalDateTime.now();
     }
 

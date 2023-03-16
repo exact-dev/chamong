@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Data
-public class Community {
+public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long communityId; // PK
@@ -34,7 +34,7 @@ public class Community {
     private int likeCount;
     private int commentCount;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
     @CreatedDate
@@ -48,16 +48,16 @@ public class Community {
 
     public void addComment(Comment comment){
         this.comments.add(comment);
-        comment.setCommunity(this);
+        comment.setArticle(this);
     }
     public void removeComment(Comment comment){
         this.comments.remove(comment);
-        comment.setCommunity(null);
+        comment.setArticle(null);
     }
 
-    public void update(Community community){
-        this.title = community.getTitle();
-        this.content = community.getContent();
+    public void update(Article article){
+        this.title = article.getTitle();
+        this.content = article.getContent();
         this.updateAt = LocalDateTime.now();
     }
     public void increaseLikeCount(){
@@ -75,8 +75,8 @@ public class Community {
         this.commentCount--;
     }
 
-    public Community toEntity(){
-        return Community.builder()
+    public Article toEntity(){
+        return Article.builder()
                 .title(title)
                 .content(content)
                 .articleImg(articleImg)
