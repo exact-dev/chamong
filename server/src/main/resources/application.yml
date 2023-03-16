@@ -64,3 +64,4 @@ jwt:
   refresh-token-expiration-millisecond: 14400000
 admin:
   email: admin@gmail.com
+
