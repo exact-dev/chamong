@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("members")
+@RequestMapping("/members")
 public class MemberController {
   private final MemberMapper mapper;
   private final MemberService memberService;
@@ -27,7 +27,7 @@ public class MemberController {
   }
   
   @GetMapping("/mypage")
-  public ResponseEntity<?> getMemberMyPage(){
+  public ResponseEntity<?> getMyPage(@AuthenticationPrincipal Member member){
     return new ResponseEntity<>(HttpStatus.OK);
   }
   

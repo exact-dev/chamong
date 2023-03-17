@@ -29,6 +29,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
   private final JwtProvider jwtProvider;
   private final TokenRedisRepository redisRepository;
   private final MemberRepository memberRepository;
+  private final String HEADER_PREFIX = "Bearer ";
   
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -49,19 +50,21 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
     }catch (TokenException exception) {
       request.setAttribute("exception", exception);
     }
+  
+    filterChain.doFilter(request, response);
   }
   
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
     String authorization = request.getHeader("Authorization");
-    return authorization == null || !authorization.startsWith("Barer");
+    return authorization == null || !authorization.startsWith("Bearer");
   }
   
   public Claims verifyJws(HttpServletRequest request, HttpServletResponse response) {
-    String accessToken = request.getHeader("Authorization").substring(7);
+    String accessToken = request.getHeader("Authorization").substring(HEADER_PREFIX.length());
     String refreshToken = request.getHeader("Refresh");
     
-    if (redisRepository.findBy(accessToken).equals("logout")){
+    if (redisRepository.findBy(accessToken) != null){
       throw new TokenException(AuthenticationExceptionCode.LOGGED_OUT_MEMBER);
     }
     
@@ -73,7 +76,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
       }
       Member member = memberRepository.findByEmail(claims.getSubject()).orElseThrow();
       String newAccessToken = jwtProvider.generateAccessToken(member);
-      response.setHeader("Authorization", "Bearer " + newAccessToken);
+      response.setHeader("Authorization", HEADER_PREFIX + newAccessToken);
       return jwtProvider.parseClaims(newAccessToken);
     }
   

@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CustomAuthorityUtils {
-  @Value("${admin.email}")
-  private static String adminEmail;
+//  @Value("${admin.email}")
+  private static String adminEmail = "admin@gmail.com";
   private static final List<String> ADMIN_ROLES = List.of("ROLE_ADMIN", "ROLE_USER");
-  private static final List<String> USER_ROLES = List.of("ROLE_ADMIN", "ROLE_USER");
+  private static final List<String> USER_ROLES = List.of("ROLE_USER");
   
   public static List<GrantedAuthority> createAuthority(List<String> roles){
     return roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());

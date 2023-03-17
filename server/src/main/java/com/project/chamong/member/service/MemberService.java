@@ -1,6 +1,7 @@
 package com.project.chamong.member.service;
 
 import com.project.chamong.auth.repository.TokenRedisRepository;
+import com.project.chamong.auth.utils.CustomAuthorityUtils;
 import com.project.chamong.exception.BusinessLogicException;
 import com.project.chamong.exception.ExceptionCode;
 import com.project.chamong.member.entity.Member;
@@ -24,6 +25,8 @@ public class MemberService {
   
   public Member saveMember(Member member){
     verifyExistEmail(member.getEmail());
+    member.setPassword(passwordEncoder.encode(member.getPassword()));
+    member.setRoles(CustomAuthorityUtils.crateRoles(member.getEmail()));
     return memberRepository.save(member);
   }
   
