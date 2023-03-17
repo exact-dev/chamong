@@ -37,10 +37,10 @@ public class JwtProvider {
     claims.put("roles", member.getRoles());
     
     return Jwts.builder()
+      .setClaims(claims)
       .setSubject(member.getEmail())
       .setIssuedAt(Calendar.getInstance().getTime())
       .setExpiration(calendar.getTime())
-      .setClaims(claims)
       .signWith(key)
       .compact();
   }
