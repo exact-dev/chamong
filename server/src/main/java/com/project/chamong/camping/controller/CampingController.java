@@ -166,4 +166,20 @@ public class CampingController {
 
         return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
     }
+
+    // 캠핑장 메인 페이지
+    @GetMapping
+    public ResponseEntity getContents(int page) {
+        Page<Content> pageContent = campingApiService.findContents(page - 1);
+        List<Content> content = pageContent.getContent();
+        return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
+    }
+
+    // 캠핑장 상세 페이지
+    @GetMapping("/{content-id}")
+    public ResponseEntity getContent(
+            @PathVariable("content-id") @Positive long contentId) {
+        Content content = campingApiService.findContent(contentId);
+        return new ResponseEntity<>(mapper.campingReponse(content), HttpStatus.OK);
+    }
 }

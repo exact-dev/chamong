@@ -17,6 +17,23 @@ public interface CampingApiRepository extends JpaRepository<Content, Long> {
 
     Page<Content> findByThemaEnvrnClContaining(String keyword, Pageable pageable);
 
+    // 메인페이지
+//    @Query(value = "SELECT content.content_id, COUNT(review.content_id) AS total, SUM(review.rating) AS ratings " +
+//            "FROM content " +
+//            "LEFT JOIN review ON content.content_id = review.content_id " +
+//            "GROUP BY content.content_id " +
+//            "ORDER BY ratings DESC, total DESC", nativeQuery = true)
+    @Query("SELECT new com.project.chamong.camping.dto.CampingApiDto(" +
+            "c.*, " +
+            // 기타 필드들
+            "COUNT(r.content_id) AS total, " +
+            "SUM(r.rating) AS ratings) " +
+            "FROM Content c " +
+            "LEFT JOIN Review r ON c.content_id = r.content_id " +
+            "GROUP BY c.content_id " +
+            "ORDER BY ratings DESC, total DESC")
+    Page<Content> findContents(Pageable pageable);
+
     // 고캠핑 검색
     @Query(value = "SELECT c FROM Content c WHERE " +
             "    c.facltNm LIKE %:keyword% OR " +

@@ -1,4 +1,4 @@
-package com.project.chamong.review.entity;
+package com.project.chamong.bookmark.entity;
 
 import com.project.chamong.audit.Auditable;
 import com.project.chamong.camping.entity.Content;
@@ -13,16 +13,11 @@ import javax.persistence.*;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Review extends Auditable {
+public class Bookmark extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long reviewId;
-
-    @Column(name = "content", columnDefinition = "TEXT")
-    private String content;
-
-    private int rating;
+    private long bookmarkId;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -30,5 +25,5 @@ public class Review extends Auditable {
 
     @ManyToOne
     @JoinColumn(name = "content_id")
-    private Content contents;
+    private Content content;
 }

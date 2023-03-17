@@ -1,9 +1,7 @@
 package com.project.chamong.community.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.project.chamong.member.entity.Member;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -12,10 +10,8 @@ import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Data
+@Getter
+@Setter
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,19 +23,26 @@ public class Comment {
     @LastModifiedDate
     private LocalDateTime updateAt;
 
-//    private Member profile_img;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_img")
+    private Member profile_img;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "community_id")
+    @JoinColumn(name = "article_id")
     private Article article;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     public void update(String comment){
         this.content = article.getContent();
         this.updateAt = LocalDateTime.now();
+    }
+
+    public Comment(String content, Article article){
+        this.content = content;
+        this.article = article;
     }
 
 }

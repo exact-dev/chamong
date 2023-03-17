@@ -1,9 +1,7 @@
 package com.project.chamong.community.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.project.chamong.member.entity.Member;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -14,73 +12,74 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-@Data
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long communityId; // PK
-
-    // private Long memberId;
+    private Long articleId; // PK
     private String writer; // 작성자
     @NotEmpty
     private String title;
     @NotEmpty
     private String content;
     private String articleImg;
-    private int view;
-    private int likeCount;
-    private int commentCount;
+    private Long viewCnt = 0L;
+    private int likeCnt;
+    private int commentCnt;
 
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    private List<ArticleLike> articleLikes = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime createdAt;
     @LastModifiedDate
     private LocalDateTime updateAt;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    public void addComment(Comment comment){
+    public void addComment(Comment comment) {
         this.comments.add(comment);
         comment.setArticle(this);
     }
-    public void removeComment(Comment comment){
+
+    public void removeComment(Comment comment) {
         this.comments.remove(comment);
         comment.setArticle(null);
     }
 
-    public void update(Article article){
-        this.title = article.getTitle();
-        this.content = article.getContent();
+    public void update(Article community) {
+        this.title = community.getTitle();
+        this.content = community.getContent();
         this.updateAt = LocalDateTime.now();
     }
-    public void increaseLikeCount(){
-        this.likeCount++;
+
+    public void increaseLikeCnt() {
+        this.likeCnt++;
     }
 
-    public void decreaseLikeCount(){
-        this.likeCount--;
-    }
-    public void increaseCommentCount(){
-        this.commentCount++;
+    public void decreaseLikeCnt() {
+        this.likeCnt--;
     }
 
-    public void decreaseCommentCount(){
-        this.commentCount--;
+    public void increaseCommentCnt() {
+        this.commentCnt++;
     }
 
-    public Article toEntity(){
-        return Article.builder()
-                .title(title)
-                .content(content)
-                .articleImg(articleImg)
-                .writer(writer)
-                .build();
+    public void decreaseCommentCnt() {
+        this.commentCnt--;
     }
+
+    public Article(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
 }

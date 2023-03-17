@@ -5,6 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LikeRepository extends JpaRepository<ArticleLike, Long> {
-    Object deleteByCommunityAndUserId(Long communityId, Long userId);
+public interface ArticleLikeRepository extends JpaRepository<ArticleLike, Long> {
 }

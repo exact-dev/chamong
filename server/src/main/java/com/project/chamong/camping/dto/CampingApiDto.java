@@ -1,7 +1,10 @@
 package com.project.chamong.camping.dto;
 
+import com.project.chamong.review.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.List;
 
 public class CampingApiDto {
 
@@ -90,6 +93,8 @@ public class CampingApiDto {
     @Getter
     @AllArgsConstructor
     public static class response{
+        private long contentId;
+
         // 업체명
         private String facltNm;
 
@@ -167,5 +172,7 @@ public class CampingApiDto {
 
         // 섬, 호수, 강 등등 종류
         private String lctCl;
+
+        private List<Review> reviews;
     }
 }

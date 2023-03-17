@@ -5,17 +5,16 @@ import com.project.chamong.camping.entity.Content;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
-
-import org.mapstruct.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-03-16T10:35:31+0900",
+    date = "2023-03-17T00:24:59+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 11.0.18 (Azul Systems, Inc.)"
 )
 @Component
 public class CampingApiMapperImpl implements CampingApiMapper {
+
     @Override
     public List<CampingApiDto.response> campingReponses(List<Content> contents) {
         if ( contents == null ) {
@@ -24,17 +23,19 @@ public class CampingApiMapperImpl implements CampingApiMapper {
 
         List<CampingApiDto.response> list = new ArrayList<CampingApiDto.response>( contents.size() );
         for ( Content content : contents ) {
-            list.add( contentToresponse( content ) );
+            list.add( campingReponse( content ) );
         }
 
         return list;
     }
 
-    protected CampingApiDto.response contentToresponse(Content content) {
+    @Override
+    public CampingApiDto.response campingReponse(Content content) {
         if ( content == null ) {
             return null;
         }
 
+        long contentId = 0L;
         String facltNm = null;
         String lineIntro = null;
         String intro = null;
@@ -62,6 +63,7 @@ public class CampingApiMapperImpl implements CampingApiMapper {
         String posblFcltyCl = null;
         String lctCl = null;
 
+        contentId = content.getContentId();
         facltNm = content.getFacltNm();
         lineIntro = content.getLineIntro();
         intro = content.getIntro();
@@ -89,7 +91,9 @@ public class CampingApiMapperImpl implements CampingApiMapper {
         posblFcltyCl = content.getPosblFcltyCl();
         lctCl = content.getLctCl();
 
-        CampingApiDto.response response = new CampingApiDto.response( facltNm, lineIntro, intro, themaEnvrnCl, mapX, mapY, addr1, tel, homepage, resveCl, doNm, manageSttus, induty, firstImageUrl, createdtime, modifiedtime, featureNm, brazierCl, glampInnerFclty, caravInnerFclty, sbrsCl, animalCmgCl, exprnProgrmAt, exprnProgrm, posblFcltyCl, lctCl );
+        int rating = 0;
+
+        CampingApiDto.response response = new CampingApiDto.response( contentId, facltNm, lineIntro, intro, themaEnvrnCl, mapX, mapY, addr1, tel, homepage, resveCl, doNm, manageSttus, induty, firstImageUrl, createdtime, modifiedtime, featureNm, brazierCl, glampInnerFclty, caravInnerFclty, sbrsCl, animalCmgCl, exprnProgrmAt, exprnProgrm, posblFcltyCl, lctCl, rating );
 
         return response;
     }
