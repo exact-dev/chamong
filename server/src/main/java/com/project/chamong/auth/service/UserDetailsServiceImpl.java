@@ -28,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   }
   @Getter
   @AllArgsConstructor
-  public class UserDetailsImpl implements UserDetails{
+  public class UserDetailsImpl implements UserDetails {
     private Member member;
     
     @Override

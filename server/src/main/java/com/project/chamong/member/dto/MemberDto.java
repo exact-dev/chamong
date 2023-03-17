@@ -33,7 +33,7 @@ public class MemberDto {
   @Getter
   public static class Patch{
     @NotBlank(message = "nickname 는 공백일 수 없습니다.")
-    @Length(min = 20, message = "nickname 길이는 최대 20자 이하로 입력해 주세요.")
+    @Length(max = 20, message = "nickname 길이는 최대 20자 이하로 입력해 주세요.")
     private String nickname;
     @NotBlank(message = "password 는 공백일 수 없습니다.")
     @Length(min = 4, max = 20, message = "password 길이는 최소 4자 이상 최대 20자 이하로 입력해 주세요.")

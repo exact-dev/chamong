@@ -2,9 +2,7 @@ package com.project.chamong.member.mapper;
 
 import com.project.chamong.member.dto.MemberDto;
 import com.project.chamong.member.entity.Member;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MemberMapper {
@@ -14,4 +12,7 @@ public interface MemberMapper {
   Member memberPatchDtoToMember(MemberDto.Patch patchDto);
   
   MemberDto.Response memberToMemberResponseDto(Member member);
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "email", ignore = true)
+  Member memberToMember(Member sourceMember, @MappingTarget Member targetMember);
 }
