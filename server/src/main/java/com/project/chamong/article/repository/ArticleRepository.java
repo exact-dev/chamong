@@ -1,10 +1,12 @@
-package com.project.chamong.community.repository;
+package com.project.chamong.article.repository;
 
-import com.project.chamong.community.entity.Article;
+import com.project.chamong.article.entity.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-
+    List<Article> findByTitleContaining(String keyword);
 }

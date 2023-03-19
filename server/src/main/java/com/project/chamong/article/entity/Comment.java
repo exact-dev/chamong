@@ -1,4 +1,4 @@
-package com.project.chamong.community.entity;
+package com.project.chamong.article.entity;
 
 import com.project.chamong.member.entity.Member;
 import lombok.*;
@@ -18,10 +18,17 @@ public class Comment {
     private Long id;
     @NotEmpty
     private String content;
+
+    private Long articleId;
+    private Long memberId;
+
+    // 댓글 작성자 닉네임
+    private String nickname;
+
     @CreatedDate
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_img")
@@ -35,14 +42,5 @@ public class Comment {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public void update(String comment){
-        this.content = article.getContent();
-        this.updateAt = LocalDateTime.now();
-    }
-
-    public Comment(String content, Article article){
-        this.content = content;
-        this.article = article;
-    }
 
 }
