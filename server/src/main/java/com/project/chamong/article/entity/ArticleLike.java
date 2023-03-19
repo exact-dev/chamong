@@ -13,13 +13,14 @@ public class ArticleLike {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "article_id")
-    private Long articleId;
+//    @Column(name = "article_id")
+//    private Long articleId;
 
     @Column(name = "member_id")
     private Long memberId;
 
     @ManyToOne
+    @JoinColumn(name = "article_id")
     private Article article;
 
 

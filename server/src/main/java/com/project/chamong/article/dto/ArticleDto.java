@@ -1,34 +1,14 @@
 package com.project.chamong.article.dto;
 
-import com.project.chamong.article.entity.ArticleLike;
-import com.project.chamong.article.entity.Comment;
-import com.project.chamong.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
 public class ArticleDto {
-    private Long id;
-    private String nickName;
-    private String title;
-    private String content;
-    private String articleImg;
-    private int viewCnt;
-    private int likeCnt;
-    private int commentCnt;
-    private List<Comment> comments = new ArrayList<>();
-    private List<ArticleLike> articleLikes = new ArrayList<>();
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private Member member;
-    private Long memberId;
-
     @Getter
     @Setter
     public static class Response {

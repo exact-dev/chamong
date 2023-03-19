@@ -6,38 +6,34 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/communities")
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
 
     // 댓글 목록 조회
-    @GetMapping("/{id}")
-    public ResponseEntity<CommentDto.Response> getComment(@PathVariable Long id){
-        CommentDto.Response comment = commentService.getComment(id);
-        return ResponseEntity.ok(comment);
+    @GetMapping("/comments")
+    public ResponseEntity<List<CommentDto.Response>> getComments(@RequestParam("articleId") long articleId) {
+        return ResponseEntity.ok(commentService.getCommentsByArticleId(articleId));
     }
 
     // 댓글 생성
-    @PostMapping
+    @PostMapping("/comments")
     public ResponseEntity<CommentDto.Response> createComment(@RequestBody CommentDto.Post postDto){
-        CommentDto.Response response = commentService.createComment(postDto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(commentService.createComment(postDto));
     }
 
     // 댓글 수정
-    @PatchMapping("/{id}")
+    @PatchMapping("/comments/{id}")
     public ResponseEntity<CommentDto.Response> updateComment(@PathVariable Long id, @RequestBody CommentDto.Patch patchDto){
-        CommentDto.Response response = commentService.updateComment(id, patchDto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(commentService.updateComment(id, patchDto));
     }
     // 댁글 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/comments/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id){
         commentService.deleteComment(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
-
-
 }

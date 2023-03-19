@@ -1,5 +1,6 @@
 package com.project.chamong.article.entity;
 
+import com.project.chamong.article.dto.ArticleDto;
 import com.project.chamong.member.entity.Member;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,6 +15,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,36 +49,9 @@ public class Article {
     // 업데이트 시간
     @LastModifiedDate
     private LocalDateTime updatedAt;
-    // 작성자 확인
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
 
     private Long memberId;
 
-    public Article(String title, String content, Member nickname) {
-        this.title = title;
-        this.content = content;
-        this.nickName = String.valueOf(nickname);
-    }
-
-
-//    public void addComment(Comment comment) {
-//        this.comments.add(comment);
-//        comment.setArticle(this);
-//    }
-
-//    public void removeComment(Comment comment) {
-//        this.comments.remove(comment);
-//        comment.setArticle(null);
-//    }
-//
-//    public void update(Article community) {
-//        this.title = community.getTitle();
-//        this.content = community.getContent();
-//        this.updatedAt = LocalDateTime.now();
-//    }
-//
     public void increaseLikeCnt() {
         this.likeCnt++;
     }
@@ -92,23 +68,27 @@ public class Article {
         this.commentCnt--;
     }
 
-    // null 체크를 하지 않으면 @Setter를 사용하므로써 문제가 생길 수 있음
-    public void update(Article updatedArticle) {
-        if (updatedArticle == null) {
-            throw new IllegalArgumentException("updated article cannot be null");
+    public void update(ArticleDto.Patch patchDto) {
+        if (patchDto.getTitle() != null) {
+            this.setTitle(patchDto.getTitle());
         }
-        if (updatedArticle.getTitle() != null) {
-            this.setTitle(updatedArticle.getTitle());
+        if (patchDto.getContent() != null) {
+            this.setContent(patchDto.getContent());
         }
-        if (updatedArticle.getContent() != null) {
-            this.setContent(updatedArticle.getContent());
-        }
-        if (updatedArticle.getArticleImg() != null) {
-            this.setArticleImg(updatedArticle.getArticleImg());
-        }
-        if (updatedArticle.getMemberId() != null) {
-            this.setMemberId(updatedArticle.getMemberId());
+        if (patchDto.getArticleImg() != null) {
+            this.setArticleImg(patchDto.getArticleImg());
         }
     }
 
+    public static Article createArticle(ArticleDto.Post postDto) {
+        Article article = new Article();
+        article.setTitle(postDto.getTitle());
+        article.setContent(postDto.getContent());
+        article.setMemberId(postDto.getMemberId());
+        article.setCreatedAt(LocalDateTime.now());
+        article.setUpdatedAt(LocalDateTime.now());
+        article.setViewCnt(0);
+        article.setLikeCnt(0);
+        return article;
+    }
 }
