@@ -19,9 +19,12 @@ public class ArticleController {
         return ResponseEntity.ok(articles);
     }
 
+    // 게시글에서 댓글 수, 좋아요 수 보이기
     @GetMapping("/articles/{id}")
     public ResponseEntity<ArticleDto.Response> getArticle(@PathVariable Long id) {
         ArticleDto.Response article = articleService.getArticle(id);
+        article.setCommentCnt(articleService.getCommentCnt(id));
+        article.setLikeCnt(articleService.getArticleLikeCnt(id));
         return ResponseEntity.ok(article);
     }
 

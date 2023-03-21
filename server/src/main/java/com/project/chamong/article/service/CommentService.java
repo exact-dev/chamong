@@ -55,6 +55,7 @@ public class CommentService {
     @Transactional
     // 게시글에 대한 댓글 수 조회
     public long getCommentCntByArticleId(Long articleId) {
+
         return commentRepository.countByArticleId(articleId);
     }
 }

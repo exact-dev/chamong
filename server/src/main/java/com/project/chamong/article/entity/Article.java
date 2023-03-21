@@ -30,6 +30,7 @@ public class Article {
     @NotEmpty
     private String content;
     // 업로드 하는 이미지
+    @Column(name = "image_url")
     private String articleImg;
     // 조회수
     private int viewCnt;
@@ -51,6 +52,10 @@ public class Article {
     private LocalDateTime updatedAt;
 
     private Long memberId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     public void increaseLikeCnt() {
         this.likeCnt++;
