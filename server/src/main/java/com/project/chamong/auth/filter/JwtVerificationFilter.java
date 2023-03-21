@@ -1,6 +1,6 @@
 package com.project.chamong.auth.filter;
 
-import com.project.chamong.auth.dto.AuthorizedMember;
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.auth.exception.AuthenticationExceptionCode;
 import com.project.chamong.auth.exception.TokenException;
 import com.project.chamong.auth.jwt.JwtProvider;
@@ -8,7 +8,6 @@ import com.project.chamong.auth.repository.TokenRedisRepository;
 import com.project.chamong.auth.utils.CustomAuthorityUtils;
 import com.project.chamong.member.entity.Member;
 import com.project.chamong.member.repository.MemberRepository;
-import com.project.chamong.member.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -86,10 +85,10 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
   
   public void setAuthenticationToContext(Claims claims){
     Member member = memberRepository.findByEmail(claims.getSubject()).orElseThrow();
-    AuthorizedMember authorizedMember = AuthorizedMember.builder().id(member.getId()).email(member.getEmail()).build();
+    AuthorizedMemberDto authorizedMemberDto = AuthorizedMemberDto.builder().id(member.getId()).email(member.getEmail()).build();
     List<GrantedAuthority> authorities = CustomAuthorityUtils.createAuthority(member.getRoles());
     UsernamePasswordAuthenticationToken authenticatedToken =
-      UsernamePasswordAuthenticationToken.authenticated(authorizedMember, null, authorities);
+      UsernamePasswordAuthenticationToken.authenticated(authorizedMemberDto, null, authorities);
   
     SecurityContextHolder.getContext().setAuthentication(authenticatedToken);
   }
