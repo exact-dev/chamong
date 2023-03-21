@@ -1,5 +1,7 @@
 package com.project.chamong.place.service;
 
+import com.project.chamong.member.entity.Member;
+import com.project.chamong.member.repository.MemberRepository;
 import com.project.chamong.place.dto.VisitedPlaceDto;
 import com.project.chamong.place.entity.VisitedPlace;
 import com.project.chamong.place.mapper.VisitedPlaceMapper;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class VisitedPlaceService {
     private final VisitedPlaceRepository visitedPlaceRepository;
     private final VisitedPlaceMapper visitedPlaceMapper;
+    private final MemberRepository memberRepository;
 
     public List<VisitedPlaceDto.Response> findAll(){
         List<VisitedPlace> visitedPlaces = visitedPlaceRepository.findAll();
@@ -30,8 +33,12 @@ public class VisitedPlaceService {
         return visitedPlace.map(visitedPlaceMapper::visitedPlaceToResponse);
     }
     public VisitedPlaceDto.Response create(VisitedPlaceDto.Post postDto){
-        VisitedPlace visitedPlace = visitedPlaceRepository.save(VisitedPlace.createVisitedPlace(postDto));
-        return visitedPlaceMapper.visitedPlaceToResponse(visitedPlace);
+        Member member = memberRepository.findById(postDto.getMemberId())
+                .orElseThrow(()-> new IllegalArgumentException("Member not found with ID: "+ postDto.getMemberId()));
+        VisitedPlace visitedPlace = VisitedPlace.createVisitedPlace(postDto, member);
+        visitedPlace.setMember(member);
+
+        return visitedPlaceMapper.visitedPlaceToResponse(visitedPlaceRepository.save(visitedPlace));
     }
     public VisitedPlaceDto.Response update(Long id, VisitedPlaceDto.Patch patchDto){
         VisitedPlace visitedPlace = visitedPlaceRepository.findById(id)
