@@ -65,5 +65,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public boolean isEnabled() {
       return true;
     }
+
   }
 }

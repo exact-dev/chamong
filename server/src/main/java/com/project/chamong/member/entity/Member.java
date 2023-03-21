@@ -1,5 +1,8 @@
 package com.project.chamong.member.entity;
 
+import com.project.chamong.article.entity.Article;
+import com.project.chamong.place.entity.MyPlace;
+import com.project.chamong.place.entity.VisitedPlace;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Member {
+
   
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
