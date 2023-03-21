@@ -1,18 +1,22 @@
 package com.project.chamong.member.controller;
 
-import com.project.chamong.auth.dto.AuthorizedMember;
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.member.dto.MemberDto;
 import com.project.chamong.member.entity.Member;
 import com.project.chamong.member.mapper.MemberMapper;
 import com.project.chamong.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,22 +33,23 @@ public class MemberController {
   }
   
   @GetMapping("/mypage")
-  public ResponseEntity<?> getMyPage(@AuthenticationPrincipal AuthorizedMember authorizedMember){
+  public ResponseEntity<?> getMyPage(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
     return new ResponseEntity<>(HttpStatus.OK);
   }
   
   @PatchMapping
-  public ResponseEntity<?> patchMember(@Valid @RequestBody MemberDto.Patch patchDto,
-                                       @AuthenticationPrincipal AuthorizedMember authorizedMember){
-  
-    Member savedMember = memberService.updateMember(mapper.memberPatchDtoToMember(patchDto), authorizedMember.getEmail());
+  public ResponseEntity<?> patchMember(@Valid @RequestPart("memberUpdate") MemberDto.Patch patchDto,
+                                       @RequestPart MultipartFile profileImg,
+                                       @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) throws IOException {
+    
+    Member savedMember = memberService.updateMember(mapper.memberPatchDtoToMember(patchDto), authorizedMemberDto.getEmail());
     MemberDto.Response response = mapper.memberToMemberResponseDto(savedMember);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
   
   @DeleteMapping
-  public ResponseEntity<?> deleteMember(@AuthenticationPrincipal Member member){
-    memberService.deleteMember(member.getEmail());
+  public ResponseEntity<?> deleteMember(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+    memberService.deleteMember(authorizedMemberDto.getEmail());
     return new ResponseEntity<>(HttpStatus.OK);
   }
   

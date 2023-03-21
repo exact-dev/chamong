@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class AuthorizedMember {
+public class AuthorizedMemberDto {
   private Long id;
   private String email;
 }

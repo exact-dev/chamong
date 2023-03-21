@@ -16,6 +16,18 @@ spring:
   redis:
     host: localhost
     port: 6379
+    password: wls5177
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 177455669845-2r2hiar8aoibtknbo7546ii7cav76hk0.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
 
 logging:
   level:
