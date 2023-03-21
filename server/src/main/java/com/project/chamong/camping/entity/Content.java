@@ -1,24 +1,27 @@
 package com.project.chamong.camping.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.chamong.camping.dto.CampingApiDto;
+import com.project.chamong.review.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contentId")
-    private int contentId;
+    private long contentId;
 
     // 업체명
     @Column(name = "facltNm")
@@ -123,6 +126,9 @@ public class Content {
     // 섬, 호수, 강 등등 종류
     @Column(name = "lctCl")
     private String lctCl;
+
+    @OneToMany(mappedBy = "contents", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 
     public Content(CampingApiDto.Post campingApiPostDto) {
         facltNm = campingApiPostDto.getFacltNm();

@@ -1,11 +1,14 @@
 package com.project.chamong.camping.repository;
 
+import com.project.chamong.camping.dto.CampingApiDto;
 import com.project.chamong.camping.entity.Content;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface CampingApiRepository extends JpaRepository<Content, Long> {
     // 고캠핑 API 특정 키워드 검색
@@ -16,6 +19,15 @@ public interface CampingApiRepository extends JpaRepository<Content, Long> {
     Page<Content> findBySbrsClContaining(String keyword, Pageable pageable);
 
     Page<Content> findByThemaEnvrnClContaining(String keyword, Pageable pageable);
+
+    // 메인페이지
+    @Query(value = "SELECT *, r.rating as rating, COUNT(review.content_id) AS total, SUM(review.rating) AS ratings " +
+            "FROM content " +
+            "LEFT JOIN review ON content.content_id = review.content_id " +
+            "GROUP BY content.content_id " +
+            "ORDER BY ratings DESC, total DESC", nativeQuery = true)
+    Page<Content> findContents(Pageable pageable);
+
 
     // 고캠핑 검색
     @Query(value = "SELECT c FROM Content c WHERE " +
