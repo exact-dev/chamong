@@ -2,22 +2,19 @@ package com.project.chamong.review.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
 public class ReviewDto {
 
     @Getter
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class Post{
-
-        @Positive
-        private long memberId;
-
-        @Positive
-        private long contentId;
 
         private int rating;
 
@@ -26,7 +23,8 @@ public class ReviewDto {
 
     }
 
-
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Response{
         private long reviewId;
         private long memberId;
@@ -35,5 +33,6 @@ public class ReviewDto {
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime updatedat;
+
     }
 }

@@ -4,9 +4,11 @@ import com.project.chamong.bookmark.entity.Bookmark;
 import com.project.chamong.bookmark.repository.BookmarkRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 
 @Service
+@Transactional
 public class BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;

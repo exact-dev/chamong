@@ -1,17 +1,23 @@
 package com.project.chamong.camping.service;
 
+import com.project.chamong.camping.dto.CampingApiDto;
 import com.project.chamong.camping.entity.Content;
 import com.project.chamong.camping.repository.CampingApiRepository;
 import com.project.chamong.exception.BusinessLogicException;
 import com.project.chamong.exception.ExceptionCode;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import com.project.chamong.review.entity.Review;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CampingApiService {
     private CampingApiRepository campingApiRepository;
     Page<Content> content;

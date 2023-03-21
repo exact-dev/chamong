@@ -25,7 +25,7 @@ import java.util.List;
  * Date   : 2023-03-08
  * Description : Main Controller
  * <p>
- * keywordId(키워드 클릭시 단발적인 이동) = 1(오션뷰), 2(피톤치드), 3(애견동반), 4(운동), 5(물놀이 시간), 6(단풍), 7(봄꽃여행), 8(일몰명소)
+ * keywordId(키워드 클릭시 단발적인 이동) = 1(오션뷰), 2(피톤치드), 3(애견동반), 4(운동), 5(물놀이 시간), 6(단풍), 7(봄꽃여행), 8(일몰명소), 9(인기)
  * areaid = 1(서울), 2(대구/경북), 3(강원), 4(경기/인천), 5(광주/전라), 6(대전/충청), 7(제주), 8(부산/경남)
  * themeId : 1(화장실), 2(산), 3(강), 4(섬), 5(숲), 6(호수), 7(해변), 8(와이파이), 9(전기), 10(운동시설), 11(물놀이), 12(마트), 13(편의점), 14(체험활동),
  * 15(낚시), 16(반려동물), 17(운영중)
@@ -174,6 +174,7 @@ public class CampingController {
         List<Content> content = pageContent.getContent();
         return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
     }
+
 
     // 캠핑장 상세 페이지
     @GetMapping("/{content-id}")
