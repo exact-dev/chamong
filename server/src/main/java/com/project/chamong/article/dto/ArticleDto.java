@@ -28,7 +28,7 @@ public class ArticleDto {
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
         private boolean like;
-        private Long memberId;
+        private MemberDto.Response member;
         private int viewCnt;
         private int likeCnt;
         private int commentCnt;

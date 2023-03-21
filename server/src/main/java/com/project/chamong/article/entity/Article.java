@@ -51,12 +51,15 @@ public class Article {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    private Long memberId;
+    //private Long memberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    public Long getMemberId(){
+        return member.getId();
+    }
     public void increaseLikeCnt() {
         this.likeCnt++;
     }
@@ -85,14 +88,15 @@ public class Article {
         }
     }
 
-    public static Article createArticle(ArticleDto.Post postDto) {
+    public static Article createArticle(ArticleDto.Post postDto, Member member) {
         Article article = new Article();
         article.setTitle(postDto.getTitle());
         article.setContent(postDto.getContent());
-        article.setMemberId(postDto.getMemberId());
+        article.setMember(member);
         article.setCreatedAt(LocalDateTime.now());
         article.setUpdatedAt(LocalDateTime.now());
         article.setViewCnt(0);
+        article.setCommentCnt(0);
         article.setLikeCnt(0);
         return article;
     }

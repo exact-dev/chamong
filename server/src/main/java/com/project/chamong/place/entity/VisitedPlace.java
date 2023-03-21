@@ -1,13 +1,11 @@
 package com.project.chamong.place.entity;
 
+import com.project.chamong.member.entity.Member;
 import com.project.chamong.place.dto.VisitedPlaceDto;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,14 +33,14 @@ public class VisitedPlace {
     private LocalDateTime updatedAt;
     // 메모
     private String memo;
-    private Long memberId;
+    //private Long memberId;
 
-//    // 멤버 고유 키
-//    @ManyToOne
-//    @JoinColumn(name = "member_id")
-//    private Member member;
+    // 멤버 고유 키
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    public static VisitedPlace createVisitedPlace(VisitedPlaceDto.Post postDto){
+    public static VisitedPlace createVisitedPlace(VisitedPlaceDto.Post postDto, Member member){
         VisitedPlace visitedPlace = new VisitedPlace();
         visitedPlace.setPlaceName(postDto.getPlaceName());
         visitedPlace.setPlaceAddress(postDto.getPlaceAddress());
@@ -50,7 +48,7 @@ public class VisitedPlace {
         visitedPlace.setLatitude(postDto.getLatitude());
         visitedPlace.setLongitude(postDto.getLongitude());
         visitedPlace.setPlacedAt(postDto.getPlacedAt());
-        visitedPlace.setMemberId(postDto.getMemberId());
+        visitedPlace.setMember(member);
         visitedPlace.setMemo(postDto.getMemo());
         return visitedPlace;
     }

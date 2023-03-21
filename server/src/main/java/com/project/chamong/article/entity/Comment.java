@@ -19,7 +19,7 @@ public class Comment {
     @NotEmpty
     private String content;
 
-    private Long articleId;
+    //private Long articleId;
     private Long memberId;
 
     // 댓글 작성자 닉네임

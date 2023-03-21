@@ -6,6 +6,8 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 // 내가 찾은 차박지
@@ -18,14 +20,20 @@ public class MyPlace {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     // 설명
+    // 필수값
+    @NotEmpty
     private String memo;
     // 키워드
     private String keyword;
     // 내가 찾은 차박지에 관련 이미지
     private String image;
     // 위도
+    // 필수값
+    @NotNull
     private Double latitude;
     // 경도
+    // 필수값
+    @NotNull
     private Double longitude;
     // 생성 날짜
     @CreatedDate
@@ -62,6 +70,5 @@ public class MyPlace {
             this.setLongitude(patchDto.getLongitude());
         }
     }
-
 
 }
