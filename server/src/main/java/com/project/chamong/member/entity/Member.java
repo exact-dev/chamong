@@ -1,5 +1,8 @@
 package com.project.chamong.member.entity;
 
+import com.project.chamong.article.entity.Article;
+import com.project.chamong.place.entity.MyPlace;
+import com.project.chamong.place.entity.VisitedPlace;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,5 +38,14 @@ public class Member {
     @ElementCollection
     @CollectionTable(name = "role_member", joinColumns = @JoinColumn(name = "member_id", referencedColumnName = "id"))
     private List<String> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    private List<Article> articles;
+
+    @OneToMany(mappedBy = "member")
+    private List<VisitedPlace> visitedPlaces;
+
+    @OneToMany(mappedBy = "member")
+    private List<MyPlace> myPlaces;
 
 }
