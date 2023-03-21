@@ -9,4 +9,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CampingApiMapper {
     List<CampingApiDto.response> campingReponses(List<Content> contents);
+    CampingApiDto.response campingReponse(Content content);
+
 }

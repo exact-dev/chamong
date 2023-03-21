@@ -1,9 +1,11 @@
 package com.project.chamong.member.service;
 
 import com.project.chamong.auth.repository.TokenRedisRepository;
+import com.project.chamong.auth.utils.CustomAuthorityUtils;
 import com.project.chamong.exception.BusinessLogicException;
 import com.project.chamong.exception.ExceptionCode;
 import com.project.chamong.member.entity.Member;
+import com.project.chamong.member.mapper.MemberMapper;
 import com.project.chamong.member.repository.MemberRepository;
 import com.project.chamong.utils.CustomBeanUtils;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +23,12 @@ public class MemberService {
   private final CustomBeanUtils customBeanUtils;
   private final PasswordEncoder passwordEncoder;
   private final TokenRedisRepository redisRepository;
+  private final MemberMapper mapper;
   
   public Member saveMember(Member member){
     verifyExistEmail(member.getEmail());
+    member.setPassword(passwordEncoder.encode(member.getPassword()));
+    member.setRoles(CustomAuthorityUtils.crateRoles(member.getEmail()));
     return memberRepository.save(member);
   }
   
@@ -31,14 +36,15 @@ public class MemberService {
     return null;
   }
   @Transactional
-  public Member updateMember(Member member, String email){
+  public Member updateMember(Member member, String email) {
     Member findMember = findByEmail(email);
-    customBeanUtils.copyNonNullProperties(member, findMember);
+//    customBeanUtils.copyNonNullProperties(member, findMember);
+    mapper.memberToMember(member, findMember);
     findMember.setPassword(passwordEncoder.encode(member.getPassword()));
     return findMember;
   }
   @Transactional
-  public void deleteMember(String email){
+  public void deleteMember(String email) {
     memberRepository.deleteByEmail(email);
     redisRepository.deleteBy(email);
   }

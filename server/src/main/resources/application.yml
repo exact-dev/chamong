@@ -9,10 +9,11 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     generate-ddl: true
     hibernate:
-      naming:
-        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#      naming:
+#        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: none
+
 #  h2:
 #    console:
 #      enabled: true
@@ -43,13 +44,17 @@ logging:
     port: 6379
     password: wls5177
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 177455669845-2r2hiar8aoibtknbo7546ii7cav76hk0.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
 
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        orm:
-#          jpa: DEBUG
 
 server:
   servlet:
