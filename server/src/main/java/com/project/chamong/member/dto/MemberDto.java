@@ -1,6 +1,9 @@
 package com.project.chamong.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.project.chamong.article.dto.ArticleDto;
+import com.project.chamong.place.dto.MyPlaceDto;
+import com.project.chamong.place.dto.VisitedPlaceDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 public class MemberDto {
   
@@ -53,10 +57,14 @@ public class MemberDto {
     private String carName;
     private String oilInfo;
   }
-  
+  @Getter
   @Setter
   public static class MyPageResponse{
     MemberDto.Response memberInfo;
+    List<MyPlaceDto.Response> myPlaceInfos;
+    List<VisitedPlaceDto.Response> visitedPlaceInfos;
+    List<ArticleDto.Response> articleInfos;
+    
     
   }
 }

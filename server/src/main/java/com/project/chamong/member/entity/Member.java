@@ -43,4 +43,6 @@ public class Member {
   @CollectionTable(name = "role_member", joinColumns = @JoinColumn(name = "member_id", referencedColumnName = "id"))
   private List<String> roles = new ArrayList<>();
   
+  
+  
 }
