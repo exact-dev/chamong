@@ -47,7 +47,7 @@ public class MemberDto {
   
   @Setter
   @Getter
-  @JsonInclude(JsonInclude.Include.NON_NULL)
+//  @JsonInclude(JsonInclude.Include.NON_NULL)
   public static class Response{
     private Long id;
     private String email;
@@ -64,6 +64,8 @@ public class MemberDto {
     List<MyPlaceDto.Response> myPlaceInfos;
     List<VisitedPlaceDto.Response> visitedPlaceInfos;
     List<ArticleDto.Response> articleInfos;
+    List<ArticleDto.Response> commentedArticleInfos;
+    List<ArticleDto.Response> likedArticleInfos;
     
     
   }

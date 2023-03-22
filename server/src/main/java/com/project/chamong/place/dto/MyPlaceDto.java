@@ -13,29 +13,25 @@ public class MyPlaceDto {
     public static class Post {
         private String memo;
         private String keyword;
-        private Long memberId;
-        private LocalDateTime placedAt;
-        private LocalDateTime updatedAt;
         private String placeImg;
         private Double latitude;
         private Double longitude;
-        private boolean shared;
-
+        private Boolean isShared;
     }
 
     @Getter
     @Setter
     public static class Response {
+        private Long id;
         private String memo;
         private String keyword;
-        private Long placeId;
         private Double latitude;
         private Double longitude;
-        private LocalDateTime placedAt;
-        private LocalDateTime updatedAt;
+        private String createdAt;
+        private String updatedAt;
         private String placeImg;
         private Long memberId;
-        private boolean shared;
+        private Boolean isShared;
 
     }
 
@@ -44,11 +40,7 @@ public class MyPlaceDto {
     public static class Patch {
         private String memo;
         private String keyword;
-        private LocalDateTime placedAt;
-        private LocalDateTime updatedAt;
         private String placeImg;
-        private Double longitude;
-        private Double latitude;
-        private boolean shared;
+        private Boolean isShared;
     }
 }

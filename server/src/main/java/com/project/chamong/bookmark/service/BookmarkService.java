@@ -19,9 +19,6 @@ public class BookmarkService {
 
     // 북마크 추가
     public Bookmark createBookmark(Bookmark bookmark){
-        bookmark.setCreatedAt(LocalDateTime.now());
-        bookmark.setUpdatedat(LocalDateTime.now());
-
         return bookmarkRepository.save(bookmark);
     }
 }

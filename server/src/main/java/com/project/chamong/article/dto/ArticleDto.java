@@ -25,10 +25,10 @@ public class ArticleDto {
         private String profileImg;
         private String oilInfo;
         private String articleImg;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private String createdAt;
+        private String updatedAt;
         private boolean like;
-        private Long memberId;
+        private MemberDto.Response member;
         private int viewCnt;
         private int likeCnt;
         private int commentCnt;
@@ -46,9 +46,7 @@ public class ArticleDto {
         private String content;
         private String articleImg;
         private Long memberId;
-        //private String nickName;
         private MemberDto.Response nickname;
-        protected LocalDateTime createdAt;
     }
 
     @Getter
@@ -61,6 +59,5 @@ public class ArticleDto {
         @Length(max = 1000, message = "content는 1000자 이하여야 합니다.")
         private String content;
         private String articleImg;
-        private LocalDateTime updatedAt;
     }
 }

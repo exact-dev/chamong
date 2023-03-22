@@ -2,8 +2,10 @@ package com.project.chamong.article.controller;
 
 import com.project.chamong.article.dto.ArticleDto;
 import com.project.chamong.article.service.ArticleService;
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,8 +49,8 @@ public class ArticleController {
     }
 
     @PostMapping("/articles/{id}/like")
-    public ResponseEntity<Void> likeArticle(@PathVariable Long id, @RequestBody Long memberId) {
-        articleService.likeArticle(id, memberId);
+    public ResponseEntity<Void> likeArticle(@PathVariable Long id, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+        articleService.likeArticle(authorizedMemberDto, id);
         return ResponseEntity.noContent().build();
     }
 

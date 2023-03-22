@@ -77,7 +77,7 @@ public class SecurityConfiguration {
         .antMatchers(HttpMethod.DELETE,"/comments/**").hasRole("USER")
         .antMatchers(HttpMethod.POST,"/members").permitAll()
         .antMatchers(HttpMethod.POST,"/members/login").permitAll()
-        .anyRequest().authenticated();
+        .anyRequest().permitAll();
       });
 //      .oauth2Login();
 //      .successHandler(new Oauth2MemberSuccessHandler(jwtProvider));

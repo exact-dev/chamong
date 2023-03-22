@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,6 +31,7 @@ public class MemberController {
   
   @GetMapping("/mypage")
   public ResponseEntity<?> getMyPage(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+//    memberService.findMyPage();
     return new ResponseEntity<>(HttpStatus.OK);
   }
   

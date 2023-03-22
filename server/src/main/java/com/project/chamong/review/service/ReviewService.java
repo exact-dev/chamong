@@ -24,9 +24,6 @@ public class ReviewService {
     // 리뷰 작성
     public Review createReview(Review review){
 
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedat(LocalDateTime.now());
-
         return reviewRepository.save(review);
     }
 

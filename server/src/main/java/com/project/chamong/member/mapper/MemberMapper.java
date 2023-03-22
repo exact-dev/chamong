@@ -14,5 +14,5 @@ public interface MemberMapper {
   MemberDto.Response memberToMemberResponseDto(Member member);
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "email", ignore = true)
-  Member memberToMember(Member sourceMember, @MappingTarget Member targetMember);
+  void memberToMember(Member sourceMember, @MappingTarget Member targetMember);
 }

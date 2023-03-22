@@ -1,5 +1,12 @@
 package com.project.chamong.place.service;
 
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
+import com.project.chamong.camping.entity.Content;
+import com.project.chamong.camping.service.CampingApiService;
+import com.project.chamong.exception.BusinessLogicException;
+import com.project.chamong.exception.ExceptionCode;
+import com.project.chamong.member.entity.Member;
+import com.project.chamong.member.service.MemberService;
 import com.project.chamong.place.dto.VisitedPlaceDto;
 import com.project.chamong.place.entity.VisitedPlace;
 import com.project.chamong.place.mapper.VisitedPlaceMapper;
@@ -9,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,30 +23,49 @@ import java.util.stream.Collectors;
 @Transactional
 public class VisitedPlaceService {
     private final VisitedPlaceRepository visitedPlaceRepository;
-    private final VisitedPlaceMapper visitedPlaceMapper;
+    private final MemberService memberService;
+    private final CampingApiService campingApiService;
 
-    public List<VisitedPlaceDto.Response> findAll(){
-        List<VisitedPlace> visitedPlaces = visitedPlaceRepository.findAll();
-        return visitedPlaces.stream()
-                .map(visitedPlaceMapper::visitedPlaceToResponse)
-                .collect(Collectors.toList());
+    public List<VisitedPlace> findVisitedPlaces(){
+        return visitedPlaceRepository.findAll();
     }
-    public Optional<VisitedPlaceDto.Response> findById(Long id){
-        Optional<VisitedPlace> visitedPlace = visitedPlaceRepository.findById(id);
-        return visitedPlace.map(visitedPlaceMapper::visitedPlaceToResponse);
+    
+    public VisitedPlace saveVisitedPlace(VisitedPlace visitedPlace, Long contentId, AuthorizedMemberDto authorizedMemberDto){
+        Member findMember = memberService.findByEmail(authorizedMemberDto.getEmail());
+    
+        Content findContent = verifyVisitedPlaceExist(findMember, contentId);
+        
+        visitedPlace.setMember(findMember);
+        visitedPlace.setContent(findContent);
+    
+        return visitedPlaceRepository.save(visitedPlace);
     }
-    public VisitedPlaceDto.Response create(VisitedPlaceDto.Post postDto){
-        VisitedPlace visitedPlace = visitedPlaceRepository.save(VisitedPlace.createVisitedPlace(postDto));
-        return visitedPlaceMapper.visitedPlaceToResponse(visitedPlace);
-    }
-    public VisitedPlaceDto.Response update(Long id, VisitedPlaceDto.Patch patchDto){
-        VisitedPlace visitedPlace = visitedPlaceRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("VisitedPlace not found with ID: "+ id));
-        visitedPlace.update(patchDto);
-        return visitedPlaceMapper.visitedPlaceToResponse(visitedPlace);
-    }
-    public void delete(Long id){
+
+    public void deleteVisitedPlace(Long id, AuthorizedMemberDto authorizedMemberDto){
+        VisitedPlace findVisitedPlace = verifyVisitedPlaceExist(id);
+        
+        if(findVisitedPlace.getMember().getId() != authorizedMemberDto.getId()){
+            throw new BusinessLogicException(ExceptionCode.VISITED_PLACE_DELETE_NO_PERMISSION);
+        }
+        
         visitedPlaceRepository.deleteById(id);
+    }
+    
+    public Content verifyVisitedPlaceExist(Member member, Long contentId){
+        
+        boolean isContained = member.getVisitedPlaces().stream()
+          .anyMatch(visitedPlace -> visitedPlace.getContent().getContentId() == contentId);
+        
+        if(isContained){
+            throw new BusinessLogicException(ExceptionCode.VISITED_PLACE_EXISTS);
+        }
+    
+        return campingApiService.findContent(contentId);
+    }
+    
+    public VisitedPlace verifyVisitedPlaceExist(Long id){
+        return visitedPlaceRepository.findById(id)
+          .orElseThrow(() -> new BusinessLogicException(ExceptionCode.VISITED_PLACE_NOT_FOUND));
     }
 
 }

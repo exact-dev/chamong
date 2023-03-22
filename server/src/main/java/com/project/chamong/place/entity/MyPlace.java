@@ -1,67 +1,47 @@
 package com.project.chamong.place.entity;
 
+import com.project.chamong.audit.Auditable;
 import com.project.chamong.member.entity.Member;
-import com.project.chamong.place.dto.MyPlaceDto;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 // 내가 찾은 차박지
 @Entity
 @Getter
 @Setter
-public class MyPlace {
+public class MyPlace extends Auditable {
     // 장소 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     // 설명
+    // 필수값
     private String memo;
     // 키워드
     private String keyword;
     // 내가 찾은 차박지에 관련 이미지
-    private String image;
+    private String placeImg;
     // 위도
     private Double latitude;
     // 경도
     private Double longitude;
-    // 생성 날짜
-    @CreatedDate
-    private LocalDateTime placedAt;
     // 공유 상태
-    private boolean shared;
+    private Boolean isShared;
 
     // 멤버 고유 키
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
-
-    public static MyPlace createMyPlace(MyPlaceDto.Post postDto) {
-        MyPlace myPlace = new MyPlace();
-        myPlace.setMemo(myPlace.getMemo());
-        myPlace.setKeyword(myPlace.getKeyword());
-        myPlace.setImage(myPlace.getImage());
-        myPlace.setLatitude(myPlace.getLatitude());
-        myPlace.setLongitude(myPlace.getLongitude());
-        return myPlace;
+    
+    public void setMember(Member member){
+        if(this.member != null){
+            this.member.getMyPlaces().remove(this);
+        }
+        this.member = member;
+        member.getMyPlaces().add(this);
     }
-
-    public void update(MyPlaceDto.Patch patchDto) {
-        if (patchDto.getMemo() != null) {
-            this.setMemo(patchDto.getMemo());
-        }
-        if (patchDto.getKeyword() != null) {
-            this.setKeyword(patchDto.getKeyword());
-        }
-        if (patchDto.getLatitude() != null) {
-            this.setLatitude(patchDto.getLatitude());
-        }
-        if (patchDto.getLongitude() != null) {
-            this.setLongitude(patchDto.getLongitude());
-        }
-    }
-
 
 }

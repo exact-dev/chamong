@@ -26,8 +26,8 @@ public class CommentDto {
         private Long memberId;
         private String nickName;
         private String profileImg;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
+        private String createdAt;
+        private String updatedAt;
 
     }
 

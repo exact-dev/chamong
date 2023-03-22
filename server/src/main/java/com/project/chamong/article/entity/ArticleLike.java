@@ -1,5 +1,6 @@
 package com.project.chamong.article.entity;
 
+import com.project.chamong.audit.Auditable;
 import com.project.chamong.member.entity.Member;
 import lombok.*;
 
@@ -8,28 +9,32 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class ArticleLike {
+public class ArticleLike extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(name = "article_id")
-//    private Long articleId;
-
-    @Column(name = "member_id")
-    private Long memberId;
-
     @ManyToOne
     @JoinColumn(name = "article_id")
     private Article article;
-
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "article_id")
-//    private Article article;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id")
-//    private Member member;
-
+    
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+    
+    public void setArticle(Article article) {
+        if(this.article != null){
+            this.article.getArticleLikes().remove(this);
+        }
+        this.article = article;
+        article.getArticleLikes().add(this);
+    }
+    
+    public void setMember(Member member) {
+        if(this.member != null){
+            this.member.getArticleLikes().remove(this);
+        }
+        this.member = member;
+        member.getArticleLikes().add(this);
+    }
 }

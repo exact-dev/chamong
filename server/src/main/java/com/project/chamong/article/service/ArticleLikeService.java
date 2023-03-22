@@ -18,7 +18,7 @@ public class ArticleLikeService {
     public void likeArticle(Long articleId, Long memberId) {
         ArticleLike articleLike = new ArticleLike();
         articleLike.setArticle(articleRepository.getOne(articleId));
-        articleLike.setMemberId(memberId);
+//        articleLike.setMemberId(memberId);
         articleLikeRepository.save(articleLike);
 
         Article article = articleRepository.findById(articleId)
