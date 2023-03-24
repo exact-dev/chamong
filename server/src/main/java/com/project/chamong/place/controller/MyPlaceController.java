@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -40,7 +41,8 @@ public class MyPlaceController {
 
     // 장소 생성
     @PostMapping
-    public ResponseEntity<?> postMyPlace(@RequestBody @Valid MyPlaceDto.Post postDto,
+    public ResponseEntity<?> postMyPlace(@RequestPart("postMyPlace") @Valid MyPlaceDto.Post postDto,
+                                         @RequestPart MultipartFile placeImg,
                                          @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
         
         MyPlace myPlace = mapper.postDtoToMyPlace(postDto);
@@ -50,7 +52,8 @@ public class MyPlaceController {
     }
     // 장소 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<?> patchMyPlace(@RequestBody @Valid MyPlaceDto.Patch patchDto,
+    public ResponseEntity<?> patchMyPlace(@RequestPart("patchMyPlace") @Valid MyPlaceDto.Patch patchDto,
+                                          @RequestPart MultipartFile placeImg,
                                           @PathVariable @Positive Long id,
                                           @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
         

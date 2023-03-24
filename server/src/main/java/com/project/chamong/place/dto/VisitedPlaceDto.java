@@ -1,5 +1,6 @@
 package com.project.chamong.place.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 public class VisitedPlaceDto {
     @Getter
     @Setter
+    @Builder
     public static class Response{
         // 장소 ID
         private Long id;

@@ -31,8 +31,9 @@ public class MemberController {
   
   @GetMapping("/mypage")
   public ResponseEntity<?> getMyPage(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
-//    memberService.findMyPage();
-    return new ResponseEntity<>(HttpStatus.OK);
+    Member findMember = memberService.findMyPage(authorizedMemberDto);
+    MemberDto.MyPageResponse response = mapper.memberToMemberMypageResponse(findMember);
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
   
   @PatchMapping

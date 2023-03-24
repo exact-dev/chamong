@@ -21,24 +21,29 @@ import java.util.List;
 public class Article extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // PK
-    // 작성자 닉네임
-    private String nickName;
+    private Long id;
+   
     // 제목
     @NotEmpty
     private String title;
+    
     // 내용
     @NotEmpty
     private String content;
+    
     // 업로드 하는 이미지
     @Column(name = "image_url")
     private String articleImg;
+    
     // 조회수
     private int viewCnt;
+    
     // 좋아요 수
     private int likeCnt;
+    
     // 댓글 수
     private int commentCnt;
+    
     // 댓글
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();

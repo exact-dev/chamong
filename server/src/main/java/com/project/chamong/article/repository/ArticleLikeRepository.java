@@ -1,6 +1,7 @@
 package com.project.chamong.article.repository;
 
 import com.project.chamong.article.entity.ArticleLike;
+import com.project.chamong.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

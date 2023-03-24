@@ -33,8 +33,7 @@ public class MemberService {
   }
   
   public Member findMyPage(AuthorizedMemberDto authorizedMemberDto){
-    Member findMember = findByEmail(authorizedMemberDto.getEmail());
-    return null;
+    return findByEmail(authorizedMemberDto.getEmail());
   }
   @Transactional
   public Member updateMember(Member member, String email) {

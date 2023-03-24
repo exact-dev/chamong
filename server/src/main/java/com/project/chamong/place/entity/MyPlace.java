@@ -7,6 +7,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 // 내가 찾은 차박지
 @Entity
@@ -17,17 +19,25 @@ public class MyPlace extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     // 설명
-    // 필수값
     private String memo;
+    
+    // 내가 찾은 차박지 이미지
+    String placeImg;
+    
     // 키워드
-    private String keyword;
-    // 내가 찾은 차박지에 관련 이미지
-    private String placeImg;
+    @ElementCollection
+    @CollectionTable(name = "my_place_keyword")
+    @Column(name = "keyword")
+    private List<String> keywords = new ArrayList<>();
+    
     // 위도
-    private Double latitude;
+    private Double mapX;
+    
     // 경도
-    private Double longitude;
+    private Double mapY;
+    
     // 공유 상태
     private Boolean isShared;
 

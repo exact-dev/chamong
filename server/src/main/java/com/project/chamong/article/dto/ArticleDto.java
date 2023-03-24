@@ -1,18 +1,19 @@
 package com.project.chamong.article.dto;
 
 import com.project.chamong.member.dto.MemberDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class ArticleDto {
     @Getter
     @Setter
+    @Builder
     public static class Response {
         private Long id;
         @NotBlank(message = "제목을 입력해주세요")
@@ -21,17 +22,17 @@ public class ArticleDto {
         @NotBlank(message = "내용을 입력해주세요")
         @Length(max = 1000, message = "content는 1000자 이하여야 합니다.")
         private String content;
-        private String nickName;
+        private String nickname;
         private String profileImg;
-        private String oilInfo;
+        private String carName;
         private String articleImg;
-        private String createdAt;
-        private String updatedAt;
-        private boolean like;
-        private MemberDto.Response member;
+        private Boolean isLiked;
+        private Long memberId;
         private int viewCnt;
         private int likeCnt;
         private int commentCnt;
+        private String createdAt;
+        private String updatedAt;
 
     }
 
