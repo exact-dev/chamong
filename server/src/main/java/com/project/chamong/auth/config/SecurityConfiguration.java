@@ -75,9 +75,9 @@ public class SecurityConfiguration {
         .antMatchers(HttpMethod.GET,"/pick-places/shared").permitAll()
         .antMatchers(HttpMethod.GET,"/main/**").permitAll()
         .antMatchers(HttpMethod.POST,"/members").permitAll()
-        .antMatchers(HttpMethod.POST,"/members/login").permitAll();
+        .antMatchers(HttpMethod.POST,"/members/login").permitAll()
 //        .antMatchers(HttpMethod.POST,"/login/oauth/google").permitAll();
-//        .anyRequest().authenticated();
+        .anyRequest().authenticated();
       })
       .oauth2Login()
       .successHandler(new Oauth2MemberSuccessHandler(jwtProvider, memberRepository, redisRepository));
