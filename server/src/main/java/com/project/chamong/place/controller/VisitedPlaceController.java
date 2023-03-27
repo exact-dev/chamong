@@ -30,20 +30,21 @@ public class VisitedPlaceController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     
-    @PostMapping("/{content-id}")
+    @PostMapping("/{contentId}")
     public ResponseEntity<?> postVisitedPlace(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
-                                              @PathVariable("content-id") @Positive Long contentId){
+                                              @PathVariable("contentId") @Positive Long contentId){
         VisitedPlace visitedPlace = VisitedPlace.builder().build();
         VisitedPlace saveVisitedPlace = visitedPlaceService.saveVisitedPlace(visitedPlace, contentId, authorizedMemberDto);
     
         VisitedPlaceDto.Response response = mapper.visitedPlaceToResponseDto(saveVisitedPlace);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{visitedPlaceId}")
     public ResponseEntity<?> deleteById(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
-                                        @PathVariable @Positive Long id) {
+                                        @PathVariable("visitedPlaceId") @Positive Long id) {
         visitedPlaceService.deleteVisitedPlace(id, authorizedMemberDto);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        String message = "방문한 장소가 삭제 되었습니다.";
+        return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
     }
 }

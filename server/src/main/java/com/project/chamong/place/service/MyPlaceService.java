@@ -28,6 +28,12 @@ public class MyPlaceService {
 //                .map(myPlaceMapper::myPlaceToResponse)
 //                .collect(Collectors.toList());
 //    }
+    
+    public List<MyPlace> findMyPlaceByMember(AuthorizedMemberDto authorizedMemberDto){
+        Member findMember = memberService.findByEmail(authorizedMemberDto.getEmail());
+    
+        return myPlaceRepository.findByMember(findMember);
+    }
 
     public List<MyPlace> findMyPlaceByIsShared(){
         List<MyPlace> sharedPlaces = myPlaceRepository.findByIsSharedTrue();

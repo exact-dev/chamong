@@ -6,10 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ArticleLikeDto {
-    private Long id;
-    private Long articleId;
-    private Long memberId;
-
     @Getter
     @Setter
     public static class Post{

@@ -1,12 +1,10 @@
 package com.project.chamong.place.entity;
 
-import com.project.chamong.audit.Auditable;
+import com.project.chamong.audit.BaseTime;
 import com.project.chamong.member.entity.Member;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class MyPlace extends Auditable {
+public class MyPlace extends BaseTime {
     // 장소 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

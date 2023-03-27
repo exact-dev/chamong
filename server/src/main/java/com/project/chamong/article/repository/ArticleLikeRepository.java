@@ -9,6 +9,4 @@ import java.util.Optional;
 
 @Repository
 public interface ArticleLikeRepository extends JpaRepository<ArticleLike, Long> {
-    Optional<ArticleLike> findByMemberIdAndArticleId(Long memberId, Long articleId);
-    long countByArticleId(Long articleId);
 }

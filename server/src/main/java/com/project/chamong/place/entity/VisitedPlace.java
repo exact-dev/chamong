@@ -1,22 +1,20 @@
 package com.project.chamong.place.entity;
 
-import com.project.chamong.audit.Auditable;
+import com.project.chamong.audit.BaseTime;
 import com.project.chamong.camping.entity.Content;
 import com.project.chamong.member.entity.Member;
-import com.project.chamong.place.dto.VisitedPlaceDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-public class VisitedPlace extends Auditable {
+public class VisitedPlace extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

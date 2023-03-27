@@ -24,17 +24,19 @@ import java.util.List;
 public class MyPlaceController {
     private final MyPlaceService myPlaceService;
     private final MyPlaceMapper mapper;
-
-//    // 전체 장소 목록 조회 - 내 차박지 목록 조회
-//    @GetMapping("/pick")
-//    public List<MyPlaceDto.Response> findAll(){
-//        return myPlaceService.findAll();
-//    }
     
     // 공유된 장소 조회 - 공유된 차박지 목록 조회
-    @GetMapping
-    public ResponseEntity<?> getMyPlace(){
+    @GetMapping("/shared")
+    public ResponseEntity<?> getMyPlaceIsShared(){
         List<MyPlace> myPlaces = myPlaceService.findMyPlaceByIsShared();
+        List<MyPlaceDto.Response> response = mapper.myPlacesToMyPlaceResponse(myPlaces);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    
+    // 내가 등록한 차박지만 조회
+    @GetMapping("/member")
+    public ResponseEntity<?> getMyPlace(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+        List<MyPlace> myPlaces = myPlaceService.findMyPlaceByMember(authorizedMemberDto);
         List<MyPlaceDto.Response> response = mapper.myPlacesToMyPlaceResponse(myPlaces);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -50,11 +52,12 @@ public class MyPlaceController {
         MyPlaceDto.Response response = mapper.myPlaceToResponse(saveMyPlace);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    
     // 장소 수정
-    @PatchMapping("/{id}")
+    @PatchMapping("/{myPlaceId}")
     public ResponseEntity<?> patchMyPlace(@RequestPart("patchMyPlace") @Valid MyPlaceDto.Patch patchDto,
                                           @RequestPart MultipartFile placeImg,
-                                          @PathVariable @Positive Long id,
+                                          @PathVariable("myPlaceId") @Positive Long id,
                                           @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
         
         MyPlace myPlace = mapper.patchDtoToMyPlace(patchDto);
@@ -63,11 +66,12 @@ public class MyPlaceController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     // 장소 삭제
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMyPlace(@PathVariable Long id,
+    @DeleteMapping("/{myPlaceId}")
+    public ResponseEntity<?> deleteMyPlace(@PathVariable("myPlaceId") @Positive Long id,
                                            @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
         
         myPlaceService.deleteMyPlace(id, authorizedMemberDto);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        String message = "등록한 차박지가 정상적으로 삭제 되었습니다.";
+        return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
     }
 }

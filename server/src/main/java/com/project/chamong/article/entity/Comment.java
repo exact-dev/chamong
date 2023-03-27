@@ -1,6 +1,6 @@
 package com.project.chamong.article.entity;
 
-import com.project.chamong.audit.Auditable;
+import com.project.chamong.audit.BaseTime;
 import com.project.chamong.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,21 +14,39 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-public class Comment extends Auditable {
+public class Comment extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
     @NotEmpty
     private String content;
-    
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private String profileImg;
+    private String nickname;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+    private Member member;
+    
+    public Long getMemberId(){
+        return member.getId();
+    }
+    public String getNickname(){
+        return member.getNickname();
+    }
+    public String getProfileImg(){
+        return member.getProfileImg();
+    }
+    public void setMember(Member member) {
+        if (this.member != null) {
+            this.member.getComments().remove(this);
+        }
+        this.member = member;
+        member.getComments().add(this);
+    }
 
 
 }

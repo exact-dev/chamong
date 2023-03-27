@@ -14,7 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/bookmark")
+@RequestMapping("/bookmarks")
 public class BookmarkController {
 
     private final BookmarkService bookmarkService;

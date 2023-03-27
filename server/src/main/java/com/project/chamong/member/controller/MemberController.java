@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -22,11 +23,11 @@ public class MemberController {
   private final MemberMapper mapper;
   private final MemberService memberService;
   @PostMapping
-  public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post postDto){
+  public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post postDto) {
     Member member = mapper.memberPostDtoToMember(postDto);
     Member savedMember = memberService.saveMember(member);
     MemberDto.Response response = mapper.memberToMemberResponseDto(savedMember);
-    return new ResponseEntity<>(response, HttpStatus.OK);
+    return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
   
   @GetMapping("/mypage")
@@ -49,8 +50,16 @@ public class MemberController {
   @DeleteMapping
   public ResponseEntity<?> deleteMember(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
     memberService.deleteMember(authorizedMemberDto.getEmail());
-    return new ResponseEntity<>(HttpStatus.OK);
+    String message = "정상적으로 회원 탈퇴 되었습니다.";
+    return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
   }
   
+  @GetMapping("/logout")
+  public ResponseEntity<?> logout(HttpServletRequest request,
+                                  @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+    memberService.logout(request, authorizedMemberDto);
+    String message = "정상적으로 로그아웃 되었습니다.";
+    return new ResponseEntity<>(message, HttpStatus.OK);
+  }
   
 }

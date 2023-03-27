@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -26,19 +28,21 @@ public class ArticleDto {
         private String profileImg;
         private String carName;
         private String articleImg;
-        private Boolean isLiked;
         private Long memberId;
-        private int viewCnt;
-        private int likeCnt;
-        private int commentCnt;
-        private String createdAt;
-        private String updatedAt;
-
+        private Integer viewCnt;
+        private Integer likeCnt;
+        private Integer commentCnt;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private Boolean isLiked;
+        private List<CommentDto.Response> comments;
     }
-
+    
     @Getter
     @Setter
     public static class Post {
+        private String nickname;
+        private String profileImg;
         @NotBlank(message = "제목을 입력해주세요")
         @Length(max = 100, message = "Title은 100자 이하여야 합니다.")
         private String title;
@@ -46,10 +50,8 @@ public class ArticleDto {
         @Length(max = 1000, message = "content는 1000자 이하여야 합니다.")
         private String content;
         private String articleImg;
-        private Long memberId;
-        private MemberDto.Response nickname;
     }
-
+    
     @Getter
     @Setter
     public static class Patch {
@@ -60,5 +62,6 @@ public class ArticleDto {
         @Length(max = 1000, message = "content는 1000자 이하여야 합니다.")
         private String content;
         private String articleImg;
+        
     }
 }

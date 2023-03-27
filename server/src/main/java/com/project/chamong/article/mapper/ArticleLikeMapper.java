@@ -8,6 +8,4 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ArticleLikeMapper {
-    ArticleLike articleLikePostToarticleLike(ArticleLikeDto.Post postDto);
-    List<ArticleLikeDto> toDtoList(List<ArticleLike> articleLikes);
 }

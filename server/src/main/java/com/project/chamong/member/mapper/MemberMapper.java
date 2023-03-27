@@ -17,7 +17,10 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MemberMapper {
-  
+  @Mapping(target = "about", constant = "자기 소개를 작성 해보세요.")
+  @Mapping(target = "carName", constant = "차량 정보를 입력 해보세요.")
+  @Mapping(target = "oilInfo", constant = "휘발유")
+  @Mapping(target = "profileImg", constant = "img url")
   Member memberPostDtoToMember(MemberDto.Post postDto);
   
   Member memberPatchDtoToMember(MemberDto.Patch patchDto);

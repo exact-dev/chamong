@@ -6,40 +6,55 @@ import com.project.chamong.article.repository.ArticleLikeRepository;
 import com.project.chamong.article.repository.ArticleRepository;
 import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.member.entity.Member;
+import com.project.chamong.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @RequiredArgsConstructor
 public class ArticleLikeService {
     private final ArticleLikeRepository articleLikeRepository;
     private final ArticleRepository articleRepository;
+    private final MemberRepository memberRepository;
     
-    @Transactional
-    public void likeArticle(Long articleId) {
+    @Transactional(readOnly = false)
+    public void likeArticle(AuthorizedMemberDto authorizedMemberDto, Long articleId) {
         Article article = articleRepository.findById(articleId)
           .orElseThrow(() -> new IllegalArgumentException("Article not found ID:" + articleId));
         
-        ArticleLike articleLike = new ArticleLike();
-        Member member = article.getMember();
-        articleLike.setArticle(articleRepository.getOne(articleId));
-        articleLike.setMember(member);
-        articleLikeRepository.save(articleLike);
+        var authorizedMemberArticleLike = article.getArticleLikes().stream()
+          .filter(articleLike -> articleLike.getMember().getId() == authorizedMemberDto.getId())
+          .findAny();
         
-        article.increaseLikeCnt();
+        if (authorizedMemberArticleLike.isEmpty()) {
+            article.increaseLikeCnt();
+            
+            Member member = memberRepository.findById(authorizedMemberDto.getId())
+              .orElseThrow(() -> new EntityNotFoundException(String.format("Member is not found. memberId: %d", authorizedMemberDto.getId())));
+            
+            ArticleLike articleLike = new ArticleLike();
+            articleLike.setArticle(article);
+            articleLike.setMember(member);
+            articleLikeRepository.save(articleLike);
+        }
     }
     
     
-    @Transactional
+    @Transactional(readOnly = false)
     public void unlikeArticle(AuthorizedMemberDto authorizedMemberDto, Long articleId) {
-        ArticleLike articleLike = articleLikeRepository.findByMemberIdAndArticleId(articleId, authorizedMemberDto.getId())
-          .orElseThrow(() -> new IllegalArgumentException("Article Like not found with articleId: " + articleId + " and memberId: " + authorizedMemberDto.getId()));
-        articleLikeRepository.delete(articleLike);
-        
         Article article = articleRepository.findById(articleId)
           .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + articleId));
-        article.decreaseLikeCnt();
+        
+        var authorizedMemberArticleLike = article.getArticleLikes().stream()
+          .filter(articleLike -> articleLike.getMember().getId() == authorizedMemberDto.getId())
+          .findAny();
+        if (authorizedMemberArticleLike.isPresent()) {
+            article.decreaseLikeCnt();
+            article.getArticleLikes().removeIf(articleLike -> articleLike.getMember().getId() == authorizedMemberDto.getId());
+        }
     }
 
 }

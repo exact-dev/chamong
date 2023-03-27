@@ -33,11 +33,11 @@ public class ArticleController {
         List<ArticleDto.Response> popularArticles = articleService.getPopularArticlesForApp();
         return ResponseEntity.ok(popularArticles);
     }
-    // 15개씩 보여주기
+    
+    // 전체 글 조회 - 15개씩 보여주기
     @GetMapping("/articles")
     public ResponseEntity<Page<ArticleDto.Response>> getAllArticles(@RequestParam(value = "keyword", required = false) String keyword,
-                                                                    @RequestParam(value = "page", defaultValue = "0") int page,
-                                                                    @RequestParam(value = "size", defaultValue = "15") int size) {
+                                                                    @RequestParam(value = "page", defaultValue = "0") int page,@RequestParam(value = "size", defaultValue = "15") int size) {
         // 신규 등록 순으로 정렬
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ArticleDto.Response> articles = articleService.getArticles(keyword, pageRequest);
@@ -46,18 +46,16 @@ public class ArticleController {
     
     // 특정 게시글 보이기
     @GetMapping("/articles/{id}")
-    public ResponseEntity<ArticleDto.Response> getArticle(@PathVariable Long id) {
-        ArticleDto.Response article = articleService.getArticle(id);
-        article.setViewCnt(articleService.getArticleViewCnt(id));
-        article.setCommentCnt(articleService.getCommentCnt(id));
-        article.setLikeCnt(articleService.getArticleLikeCnt(id));
-        return ResponseEntity.ok(article);
+    public ResponseEntity<ArticleDto.Response> getArticle(@PathVariable Long id, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+        ArticleDto.Response response = articleService.getArticle(id, authorizedMemberDto);
+        
+        return ResponseEntity.ok(response);
     }
     
     
     @PostMapping("/articles")
-    public ResponseEntity<ArticleDto.Response> createArticle(@RequestBody ArticleDto.Post postDto) {
-        ArticleDto.Response response = articleService.createArticle(postDto);
+    public ResponseEntity<ArticleDto.Response> createArticle(@RequestBody ArticleDto.Post postDto, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+        ArticleDto.Response response = articleService.createArticle(authorizedMemberDto,postDto);
         return ResponseEntity.ok(response);
     }
     
@@ -74,8 +72,8 @@ public class ArticleController {
     }
     
     @PostMapping("/articles/{id}/like")
-    public ResponseEntity<Void> likeArticle(@PathVariable Long id) {
-        articleLikeService.likeArticle(id);
+    public ResponseEntity<Void> likeArticle(@PathVariable Long id, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+        articleLikeService.likeArticle(authorizedMemberDto, id);
         return ResponseEntity.noContent().build();
     }
     

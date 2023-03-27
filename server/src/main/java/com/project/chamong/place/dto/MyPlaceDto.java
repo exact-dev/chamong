@@ -28,8 +28,8 @@ public class MyPlaceDto {
         private List<String> keywords;
         private Double mapX;
         private Double mapY;
-        private String createdAt;
-        private String updatedAt;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
         private String placeImg;
         private Long memberId;
         private Boolean isShared;

@@ -1,6 +1,6 @@
 package com.project.chamong.article.entity;
 
-import com.project.chamong.audit.Auditable;
+import com.project.chamong.audit.BaseTime;
 import com.project.chamong.member.entity.Member;
 import lombok.*;
 
@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class ArticleLike extends Auditable {
+public class ArticleLike extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

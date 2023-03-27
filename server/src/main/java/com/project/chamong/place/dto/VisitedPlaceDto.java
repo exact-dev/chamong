@@ -21,7 +21,7 @@ public class VisitedPlaceDto {
         private String firstImageUrl;
         private double mapX;
         private double mapY;
-        private String createdAt;
-        private String updatedAt;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 }
