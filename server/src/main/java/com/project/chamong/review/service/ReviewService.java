@@ -1,15 +1,11 @@
 package com.project.chamong.review.service;
 
-import com.project.chamong.camping.entity.Content;
-import com.project.chamong.exception.BusinessLogicException;
-import com.project.chamong.exception.ExceptionCode;
 import com.project.chamong.review.entity.Review;
 import com.project.chamong.review.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @Transactional

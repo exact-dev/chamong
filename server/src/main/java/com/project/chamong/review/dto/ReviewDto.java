@@ -23,16 +23,13 @@ public class ReviewDto {
 
     }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Getter
     public static class Response{
         private long reviewId;
         private long memberId;
         private long contentId;
         private int rating;
         private String content;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedat;
 
     }
 }

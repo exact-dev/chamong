@@ -3,6 +3,7 @@ package com.project.chamong.place.entity;
 import com.project.chamong.audit.BaseTime;
 import com.project.chamong.camping.entity.Content;
 import com.project.chamong.member.entity.Member;
+import com.project.chamong.place.dto.VisitedPlaceDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,8 +36,13 @@ public class VisitedPlace extends BaseTime {
         member.getVisitedPlaces().add(this);
     }
     @Builder
-    public VisitedPlace(Content content, Member member) {
+    public VisitedPlace(Content content) {
         this.content = content;
-        this.member = member;
+    }
+    
+    public static VisitedPlace createVisitedPlace(VisitedPlaceDto.Post postDto){
+        return VisitedPlace.builder()
+          .content(postDto.getContent())
+          .build();
     }
 }

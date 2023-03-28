@@ -20,8 +20,6 @@ public class Comment extends BaseTime {
     private Long id;
     @NotEmpty
     private String content;
-    private String profileImg;
-    private String nickname;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
@@ -30,23 +28,6 @@ public class Comment extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Member member;
-    
-    public Long getMemberId(){
-        return member.getId();
-    }
-    public String getNickname(){
-        return member.getNickname();
-    }
-    public String getProfileImg(){
-        return member.getProfileImg();
-    }
-    public void setMember(Member member) {
-        if (this.member != null) {
-            this.member.getComments().remove(this);
-        }
-        this.member = member;
-        member.getComments().add(this);
-    }
 
 
 }

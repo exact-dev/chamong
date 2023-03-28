@@ -25,20 +25,28 @@ public class VisitedPlaceService {
     private final VisitedPlaceRepository visitedPlaceRepository;
     private final MemberService memberService;
     private final CampingApiService campingApiService;
+    private final VisitedPlaceMapper mapper;
 
-    public List<VisitedPlace> findVisitedPlaces(){
-        return visitedPlaceRepository.findAll();
+    public List< VisitedPlaceDto.Response> findVisitedPlaces(){
+        List<VisitedPlace> visitedPlaces = visitedPlaceRepository.findAll();
+        
+        return mapper.visitedPlacesToResponseDtos(visitedPlaces);
     }
     
-    public VisitedPlace saveVisitedPlace(VisitedPlace visitedPlace, Long contentId, AuthorizedMemberDto authorizedMemberDto){
+    public VisitedPlaceDto.Response saveVisitedPlace(Long contentId, AuthorizedMemberDto authorizedMemberDto){
         Member findMember = memberService.findByEmail(authorizedMemberDto.getEmail());
     
         Content findContent = verifyVisitedPlaceExist(findMember, contentId);
-        
-        visitedPlace.setMember(findMember);
-        visitedPlace.setContent(findContent);
     
-        return visitedPlaceRepository.save(visitedPlace);
+        VisitedPlaceDto.Post postDto = VisitedPlaceDto.Post.builder().content(findContent).build();
+    
+        VisitedPlace visitedPlace = VisitedPlace.createVisitedPlace(postDto);
+    
+        visitedPlace.setMember(findMember);
+    
+        visitedPlaceRepository.save(visitedPlace);
+        
+        return mapper.visitedPlaceToResponseDto(visitedPlace);
     }
 
     public void deleteVisitedPlace(Long id, AuthorizedMemberDto authorizedMemberDto){

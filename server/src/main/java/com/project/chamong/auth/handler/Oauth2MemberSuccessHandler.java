@@ -10,6 +10,7 @@ import com.project.chamong.member.dto.MemberDto;
 import com.project.chamong.member.entity.Member;
 import com.project.chamong.member.repository.MemberRepository;
 import com.project.chamong.member.service.MemberService;
+import com.project.chamong.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,6 +36,7 @@ public class Oauth2MemberSuccessHandler implements AuthenticationSuccessHandler 
   private final JwtProvider jwtProvider;
   private final MemberRepository memberRepository;
   private final TokenRedisRepository redisRepository;
+  private final S3Service s3Service;
   
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -63,10 +65,11 @@ public class Oauth2MemberSuccessHandler implements AuthenticationSuccessHandler 
       MemberDto.Post postDto = MemberDto.Post.builder()
         .email(email)
         .nickname(String.valueOf(attributes.get("name")))
+        .roles(CustomAuthorityUtils.crateRoles(email))
+        .profileImg(s3Service.getDefaultProfileImg())
         .build();
   
       Member member = Member.createMember(postDto);
-      member.setRoles(CustomAuthorityUtils.crateRoles(member.getEmail()));
   
       return memberRepository.save(member);
     }

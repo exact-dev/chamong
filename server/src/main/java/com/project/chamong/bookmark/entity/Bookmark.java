@@ -3,6 +3,7 @@ package com.project.chamong.bookmark.entity;
 import com.project.chamong.audit.BaseTime;
 import com.project.chamong.camping.entity.Content;
 import com.project.chamong.member.entity.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Bookmark extends BaseTime {
 
     @Id

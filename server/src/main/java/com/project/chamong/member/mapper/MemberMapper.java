@@ -1,15 +1,17 @@
 package com.project.chamong.member.mapper;
 
 import com.project.chamong.article.dto.ArticleDto;
+import com.project.chamong.article.dto.CommentDto;
 import com.project.chamong.article.entity.Article;
 import com.project.chamong.article.entity.ArticleLike;
-import com.project.chamong.article.mapper.ArticleMapper;
+import com.project.chamong.article.entity.Comment;
 import com.project.chamong.member.dto.MemberDto;
 import com.project.chamong.member.entity.Member;
 import com.project.chamong.place.dto.MyPlaceDto;
 import com.project.chamong.place.dto.VisitedPlaceDto;
 import com.project.chamong.place.entity.MyPlace;
 import com.project.chamong.place.entity.VisitedPlace;
+import com.project.chamong.utils.DeduplicationUtils;
 import org.mapstruct.*;
 
 import java.util.List;
@@ -28,12 +30,20 @@ public interface MemberMapper {
   MemberDto.Response memberToMemberResponseDto(Member member);
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "email", ignore = true)
+  @Mapping(target = "password", ignore = true)
+  @Mapping(target = "roles", ignore = true)
+  @Mapping(target = "articles", ignore = true)
+  @Mapping(target = "visitedPlaces", ignore = true)
+  @Mapping(target = "myPlaces", ignore = true)
+  @Mapping(target = "comments", ignore = true)
+  @Mapping(target = "articleLikes", ignore = true)
   void memberToMember(Member sourceMember, @MappingTarget Member targetMember);
   
   default MemberDto.MyPageResponse memberToMemberMypageResponse(Member member){
     List<Article> commentedArticles = member.getComments().stream()
       .map(comment -> comment.getArticle())
       .collect(Collectors.toList());
+    List<Article> distinctCommentedArticles = DeduplicationUtils.removeDuplication(commentedArticles, Article::getId);
   
     List<Article> likedArticles = member.getArticleLikes().stream()
       .map(articleLike -> articleLike.getArticle())
@@ -45,7 +55,7 @@ public interface MemberMapper {
       .myPlaceInfos(myPlacesToMyPlaceDtos(member.getMyPlaces()))
       .visitedPlaceInfos(visitedPlacesToVisitedPlaceResponseDtos(member.getVisitedPlaces()))
       .writtenArticleInfos(articlesToArticleResponseDtos(member.getArticles(), member.getArticleLikes()))
-      .commentedArticleInfos(articlesToArticleResponseDtos(commentedArticles, member.getArticleLikes()))
+      .commentedArticleInfos(articlesToArticleResponseDtos(distinctCommentedArticles, member.getArticleLikes()))
       .likedArticleInfos(articlesToArticleResponseDtos(likedArticles, member.getArticleLikes()))
       .build();
   }
@@ -100,6 +110,7 @@ public interface MemberMapper {
         .viewCnt(article.getViewCnt())
         .likeCnt(article.getLikeCnt())
         .commentCnt(article.getCommentCnt())
+        .comments(commentsToCommentResponseDtos(article.getComments()))
         .createdAt(article.getCreatedAt())
         .updatedAt(article.getUpdatedAt())
         .build())
@@ -111,5 +122,21 @@ public interface MemberMapper {
       .stream()
       .anyMatch(memberArticleLike -> article.getArticleLikes().stream()
         .anyMatch(articleArticleLike -> memberArticleLike.getId() == articleArticleLike.getId()));
+  }
+  
+  default List<CommentDto.Response> commentsToCommentResponseDtos(List<Comment> comments){
+    return comments.stream()
+      .map(comment ->
+        CommentDto.Response.builder()
+          .id(comment.getId())
+          .articleId(comment.getArticle().getId())
+          .content(comment.getContent())
+          .memberId(comment.getMember().getId())
+          .nickname(comment.getMember().getNickname())
+          .profileImg(comment.getMember().getProfileImg())
+          .createdAt(comment.getCreatedAt())
+          .updatedAt(comment.getUpdatedAt())
+          .build()
+      ).collect(Collectors.toList());
   }
 }

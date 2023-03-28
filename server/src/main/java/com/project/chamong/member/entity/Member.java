@@ -15,7 +15,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTime {
   
@@ -58,8 +57,9 @@ public class Member extends BaseTime {
   
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
   private List<ArticleLike> articleLikes;
+  
   @Builder
-  public Member(String email, String password, String nickname, String profileImg, String about, String carName, String oilInfo) {
+  public Member(String email, String password, String nickname, String profileImg, String about, String carName, String oilInfo, List<String> roles) {
     this.email = email;
     this.password = password;
     this.nickname = nickname;
@@ -67,17 +67,29 @@ public class Member extends BaseTime {
     this.about = about;
     this.carName = carName;
     this.oilInfo = oilInfo;
+    this.roles = roles;
   }
+  
   
   public static Member createMember(MemberDto.Post postDto){
     return Member.builder()
       .email(postDto.getEmail())
       .nickname(postDto.getNickname())
       .password(postDto.getPassword())
+      .profileImg(postDto.getProfileImg())
+      .roles(postDto.getRoles())
       .about("자기 소개를 작성 해보세요.")
       .carName("차량 정보를 입력 해보세요.")
       .oilInfo("휘발유")
-      .profileImg("img url")
       .build();
+  }
+  
+  public void updateMember(MemberDto.Patch patchDto){
+    this.nickname = patchDto.getNickname();
+    this.about = patchDto.getAbout();
+    this.carName = patchDto.getCarName();
+    this.oilInfo = patchDto.getOilInfo();
+    this.profileImg = patchDto.getProfileImg();
+    
   }
 }

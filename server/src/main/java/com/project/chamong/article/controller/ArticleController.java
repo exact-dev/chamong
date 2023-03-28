@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -53,20 +54,26 @@ public class ArticleController {
     
     
     @PostMapping("/articles")
-    public ResponseEntity<ArticleDto.Response> createArticle(@RequestBody ArticleDto.Post postDto, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
-        ArticleDto.Response response = articleService.createArticle(authorizedMemberDto,postDto);
+    public ResponseEntity<ArticleDto.Response> createArticle(@RequestPart("articleCreate") ArticleDto.Post postDto,
+                                                             @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
+                                                             @RequestPart() MultipartFile articleImg) {
+        ArticleDto.Response response = articleService.createArticle(authorizedMemberDto,postDto, articleImg);
         return ResponseEntity.ok(response);
     }
     
     @PatchMapping("/articles/{id}")
-    public ResponseEntity<ArticleDto.Response> updateArticle(@PathVariable Long id, @RequestBody ArticleDto.Patch patchDto) {
-        ArticleDto.Response response = articleService.updateArticle(id, patchDto);
+    public ResponseEntity<ArticleDto.Response> updateArticle(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
+                                                             @PathVariable Long id,
+                                                             @RequestPart("articleUpdate") ArticleDto.Patch patchDto,
+                                                             @RequestPart MultipartFile articleImg) {
+        ArticleDto.Response response = articleService.updateArticle(authorizedMemberDto, id, patchDto, articleImg);
         return ResponseEntity.ok(response);
     }
     
+    
     @DeleteMapping("/articles/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
-        articleService.deleteArticle(id);
+    public ResponseEntity<Void> deleteArticle(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,@PathVariable Long id) {
+        articleService.deleteArticle(authorizedMemberDto, id);
         return ResponseEntity.ok().build();
     }
     
@@ -76,7 +83,7 @@ public class ArticleController {
         return ResponseEntity.noContent().build();
     }
     
-    @PostMapping("/articles/{id}/unlike")
+    @DeleteMapping("/articles/{id}/like")
     public ResponseEntity<Void> unlikeArticle(@PathVariable Long id, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
         articleLikeService.unlikeArticle(authorizedMemberDto, id);
         return ResponseEntity.ok().build();

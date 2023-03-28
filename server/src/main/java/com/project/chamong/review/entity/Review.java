@@ -1,5 +1,6 @@
 package com.project.chamong.review.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.chamong.audit.BaseTime;
 import com.project.chamong.camping.entity.Content;
 import com.project.chamong.member.entity.Member;
@@ -24,10 +25,12 @@ public class Review extends BaseTime {
 
     private int rating;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "content_id")
     private Content contents;

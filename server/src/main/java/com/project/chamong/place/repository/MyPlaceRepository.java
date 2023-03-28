@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface MyPlaceRepository extends JpaRepository<MyPlace, Long> {
     List<MyPlace> findByIsSharedTrue();
-    List<MyPlace> findByMember(Member member);
 }

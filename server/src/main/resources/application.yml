@@ -1,19 +1,22 @@
 spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://chamong-mysql.cita1h8oazuc.ap-northeast-2.rds.amazonaws.com:3306/chamongdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-#    url: jdbc:mysql://localhost:3306/Stack_Overflow_DB?createDatabaseIfNotExist=true&userUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
-#    username: root
-#    password : 79647964
-#  jpa:
-#    database: mysql
-#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-#    generate-ddl: true
-#    hibernate:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://chamong-mysql.cita1h8oazuc.ap-northeast-2.rds.amazonaws.com:3306/chamongdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password : 79647964
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    generate-ddl: true
+    hibernate:
 #      naming:
 #        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#      ddl-auto: none
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
   redis:
     host: localhost
@@ -29,21 +32,7 @@ spring:
             scope:
               - email
               - profile
-  h2:
-    console:
-      enabled: true
-      path: /h2
-
-  datasource:
-    url: jdbc:h2:mem:test
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+              -
 logging:
   level:
     org:
@@ -55,18 +44,24 @@ logging:
         orm:
           jpa: DEBUG
 
-
 server:
   servlet:
     encoding:
       force-response: true
-mail:
-  address:
-    admin: admin@gmail.com
+
 jwt.key: park1234123412341234123412341234
+
 jwt:
   access-token-expiration-millisecond: 3600000
   refresh-token-expiration-millisecond: 14400000
+
 admin:
   email: admin@gmail.com
+
+aws:
+  access-key: "AKIAUJ5FM6BJV7YUTZEU"
+  secret-key: "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"
+  region: "ap-northeast-2"
+  s3:
+    bucket: "chamongbucket"
 

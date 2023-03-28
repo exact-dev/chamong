@@ -28,16 +28,16 @@ public class MyPlaceController {
     // 공유된 장소 조회 - 공유된 차박지 목록 조회
     @GetMapping("/shared")
     public ResponseEntity<?> getMyPlaceIsShared(){
-        List<MyPlace> myPlaces = myPlaceService.findMyPlaceByIsShared();
-        List<MyPlaceDto.Response> response = mapper.myPlacesToMyPlaceResponse(myPlaces);
+        List<MyPlaceDto.Response> response = myPlaceService.findMyPlaceByIsShared();
+        
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     
     // 내가 등록한 차박지만 조회
     @GetMapping("/member")
     public ResponseEntity<?> getMyPlace(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
-        List<MyPlace> myPlaces = myPlaceService.findMyPlaceByMember(authorizedMemberDto);
-        List<MyPlaceDto.Response> response = mapper.myPlacesToMyPlaceResponse(myPlaces);
+        List<MyPlaceDto.Response> response = myPlaceService.findMyPlaceByMember(authorizedMemberDto);
+    
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -46,10 +46,10 @@ public class MyPlaceController {
     public ResponseEntity<?> postMyPlace(@RequestPart("postMyPlace") @Valid MyPlaceDto.Post postDto,
                                          @RequestPart MultipartFile placeImg,
                                          @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
-        
-        MyPlace myPlace = mapper.postDtoToMyPlace(postDto);
-        MyPlace saveMyPlace = myPlaceService.saveMyPlace(myPlace, authorizedMemberDto);
-        MyPlaceDto.Response response = mapper.myPlaceToResponse(saveMyPlace);
+    
+        MyPlaceDto.Response response = myPlaceService.saveMyPlace(postDto, authorizedMemberDto, placeImg);
+    
+    
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     
@@ -59,10 +59,9 @@ public class MyPlaceController {
                                           @RequestPart MultipartFile placeImg,
                                           @PathVariable("myPlaceId") @Positive Long id,
                                           @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
-        
-        MyPlace myPlace = mapper.patchDtoToMyPlace(patchDto);
-        MyPlace updateMyPlace = myPlaceService.updateMyPlace(id, myPlace, authorizedMemberDto);
-        MyPlaceDto.Response response = mapper.myPlaceToResponse(updateMyPlace);
+    
+        MyPlaceDto.Response response = myPlaceService.updateMyPlace(id, patchDto, authorizedMemberDto, placeImg);
+    
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     // 장소 삭제
@@ -72,6 +71,7 @@ public class MyPlaceController {
         
         myPlaceService.deleteMyPlace(id, authorizedMemberDto);
         String message = "등록한 차박지가 정상적으로 삭제 되었습니다.";
+        
         return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
     }
 }

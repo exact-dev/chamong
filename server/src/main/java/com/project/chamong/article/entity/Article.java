@@ -18,6 +18,7 @@ import java.util.List;
 public class Article extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id; // PK
     // 제목
     @NotEmpty
@@ -47,7 +48,6 @@ public class Article extends BaseTime {
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private Member member;
     
-    
     public void increaseLikeCnt() {
         this.likeCnt++;
     }
@@ -55,14 +55,10 @@ public class Article extends BaseTime {
     public void decreaseLikeCnt() {
         this.likeCnt--;
     }
-
-//    public void setMember(Member member) {
-//        if (this.member != null) {
-//            this.member.getArticles().remove(this);
-//        }
-//        this.member = member;
-//        member.getArticles().add(this);
-//    }
+    
+    public boolean isWriter(Member member){
+        return this.member.getId().equals(member.getId());
+    }
     
     public void update(ArticleDto.Patch patchDto) {
         if (patchDto.getTitle() != null) {

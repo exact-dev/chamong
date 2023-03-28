@@ -14,6 +14,7 @@ import java.util.List;
 public class MemberDto {
   
   @Getter
+  @Setter
   @Builder
   public static class Post{
     @NotBlank(message = "email 은 공백일 수 없습니다.")
@@ -25,8 +26,13 @@ public class MemberDto {
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,20}$",
       message = "password 길이는 최소 8자 이상 최대 20자 이하, 숫자 1자 이상, 대소문자 구분없이 영문자 1자 이상, 특수문자 1자 이상 입력 해주세요.")
     private String password;
+    
+    private String profileImg;
+    
+    private List<String> roles;
   }
   @Getter
+  @Setter
   public static class Patch{
     @NotBlank(message = "nickname 는 공백일 수 없습니다.")
     @Length(max = 20, message = "nickname 길이는 최대 20자 이하로 입력해 주세요.")
@@ -36,6 +42,8 @@ public class MemberDto {
     private String carName;
     @NotBlank(message = "oilInfo 는 공백일 수 없습니다.")
     private String oilInfo;
+    
+    private String profileImg;
     
   }
   

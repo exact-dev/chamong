@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -24,16 +25,15 @@ public class MemberController {
   private final MemberService memberService;
   @PostMapping
   public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post postDto) {
-    Member member = mapper.memberPostDtoToMember(postDto);
-    Member savedMember = memberService.saveMember(member);
-    MemberDto.Response response = mapper.memberToMemberResponseDto(savedMember);
+    MemberDto.Response response = memberService.saveMember(postDto);
+  
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
   
   @GetMapping("/mypage")
   public ResponseEntity<?> getMyPage(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
-    Member findMember = memberService.findMyPage(authorizedMemberDto);
-    MemberDto.MyPageResponse response = mapper.memberToMemberMypageResponse(findMember);
+    MemberDto.MyPageResponse response = memberService.findMyPage(authorizedMemberDto);
+  
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
   
@@ -41,9 +41,9 @@ public class MemberController {
   public ResponseEntity<?> patchMember(@Valid @RequestPart("memberUpdate") MemberDto.Patch patchDto,
                                        @RequestPart MultipartFile profileImg,
                                        @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) throws IOException {
+  
+    MemberDto.Response response = memberService.updateMember(patchDto, profileImg, authorizedMemberDto);
     
-    Member savedMember = memberService.updateMember(mapper.memberPatchDtoToMember(patchDto), authorizedMemberDto.getEmail());
-    MemberDto.Response response = mapper.memberToMemberResponseDto(savedMember);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
   
@@ -51,6 +51,7 @@ public class MemberController {
   public ResponseEntity<?> deleteMember(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
     memberService.deleteMember(authorizedMemberDto.getEmail());
     String message = "정상적으로 회원 탈퇴 되었습니다.";
+    
     return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
   }
   
@@ -61,5 +62,11 @@ public class MemberController {
     String message = "정상적으로 로그아웃 되었습니다.";
     return new ResponseEntity<>(message, HttpStatus.OK);
   }
-  
+  //실제 AccessToken 재발급 로직은 JwtVerificationFilter 에서 처리함
+  @GetMapping("/token")
+  public ResponseEntity<?> reissueAccessToken(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+    MemberDto.Response response = memberService.reissueAccessToken(authorizedMemberDto);
+    
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
 }

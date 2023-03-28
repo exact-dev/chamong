@@ -14,9 +14,7 @@ public class CommentDto {
     @Setter
     public static class Post {
         private String content;
-        private String nickname;
-        private String profileImg;
-        private Long articleId;
+        
     }
     @Getter
     @Setter

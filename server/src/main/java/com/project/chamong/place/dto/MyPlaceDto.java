@@ -17,6 +17,7 @@ public class MyPlaceDto {
         private List<String> keywords;
         private Double mapX;
         private Double mapY;
+        private String myPlaceImg;
     }
 
     @Getter
@@ -42,5 +43,6 @@ public class MyPlaceDto {
         private String memo;
         private List<String> keywords;
         private Boolean isShared;
+        private String myPlaceImg;
     }
 }

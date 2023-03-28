@@ -2,6 +2,7 @@ package com.project.chamong.place.entity;
 
 import com.project.chamong.audit.BaseTime;
 import com.project.chamong.member.entity.Member;
+import com.project.chamong.place.dto.MyPlaceDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MyPlace extends BaseTime {
     // 장소 ID
     @Id
@@ -50,6 +52,33 @@ public class MyPlace extends BaseTime {
         }
         this.member = member;
         member.getMyPlaces().add(this);
+    }
+    @Builder
+    public MyPlace(String memo, String placeImg, List<String> keywords, Double mapX, Double mapY, Boolean isShared) {
+        this.memo = memo;
+        this.placeImg = placeImg;
+        this.keywords = keywords;
+        this.mapX = mapX;
+        this.mapY = mapY;
+        this.isShared = isShared;
+    }
+    
+    public static MyPlace createMyplace(MyPlaceDto.Post postDto){
+        return MyPlace.builder()
+          .memo(postDto.getMemo())
+          .placeImg(postDto.getMyPlaceImg())
+          .keywords(postDto.getKeywords())
+          .mapX(postDto.getMapX())
+          .mapY(postDto.getMapY())
+          .isShared(false)
+          .build();
+    }
+    
+    public void updateMyPlace(MyPlaceDto.Patch patchDto){
+        this.memo = patchDto.getMemo();
+        this.placeImg = patchDto.getMyPlaceImg();
+        this.keywords = patchDto.getKeywords();
+        this.isShared = patchDto.getIsShared();
     }
 
 }

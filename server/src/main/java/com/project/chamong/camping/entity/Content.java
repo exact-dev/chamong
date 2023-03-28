@@ -1,6 +1,5 @@
 package com.project.chamong.camping.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.chamong.camping.dto.CampingApiDto;
 import com.project.chamong.review.entity.Review;
 import lombok.AllArgsConstructor;
@@ -126,9 +125,6 @@ public class Content {
     // 섬, 호수, 강 등등 종류
     @Column(name = "lctCl")
     private String lctCl;
-
-    @OneToMany(mappedBy = "contents", cascade = CascadeType.ALL)
-    private List<Review> reviews = new ArrayList<>();
 
     public Content(CampingApiDto.Post campingApiPostDto) {
         facltNm = campingApiPostDto.getFacltNm();

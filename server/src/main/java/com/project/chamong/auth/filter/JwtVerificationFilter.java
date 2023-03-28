@@ -6,6 +6,8 @@ import com.project.chamong.auth.exception.TokenException;
 import com.project.chamong.auth.jwt.JwtProvider;
 import com.project.chamong.auth.repository.TokenRedisRepository;
 import com.project.chamong.auth.utils.CustomAuthorityUtils;
+import com.project.chamong.exception.BusinessLogicException;
+import com.project.chamong.exception.ExceptionCode;
 import com.project.chamong.member.entity.Member;
 import com.project.chamong.member.repository.MemberRepository;
 import io.jsonwebtoken.Claims;
@@ -56,31 +58,38 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
   
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-    String authorization = request.getHeader("Authorization");
-    return authorization == null || !authorization.startsWith("Bearer");
+    String accessToken = request.getHeader("Authorization");
+    String refreshToken = request.getHeader("Refresh");
+    
+    return !(accessToken != null && accessToken.startsWith(HEADER_PREFIX)) && !(refreshToken != null);
   }
   
   public Claims verifyJws(HttpServletRequest request, HttpServletResponse response) {
-    String accessToken = request.getHeader("Authorization").substring(HEADER_PREFIX.length());
+    String accessToken = request.getHeader("Authorization");
     String refreshToken = request.getHeader("Refresh");
     
-    if (redisRepository.findBy(accessToken) != null){
-      throw new TokenException(AuthenticationExceptionCode.LOGGED_OUT_MEMBER);
+    if(accessToken != null){
+      accessToken = accessToken.substring(HEADER_PREFIX.length());
+  
+      if (redisRepository.findBy(accessToken) != null) {
+        throw new TokenException(AuthenticationExceptionCode.LOGGED_OUT_MEMBER);
+      }
+  
+      return jwtProvider.parseClaims(accessToken);
     }
     
-    if(refreshToken != null) {
-      Claims claims = jwtProvider.parseClaims(refreshToken);
-      String findRefreshToken = redisRepository.findBy(claims.getSubject());
-      if(!refreshToken.equals(findRefreshToken)){
-        throw new TokenException(AuthenticationExceptionCode.MISMATCHED_TOKEN);
-      }
-      Member member = memberRepository.findByEmail(claims.getSubject()).orElseThrow();
-      String newAccessToken = jwtProvider.generateAccessToken(member);
-      response.setHeader("Authorization", HEADER_PREFIX + newAccessToken);
-      return jwtProvider.parseClaims(newAccessToken);
+    Claims claims = jwtProvider.parseClaims(refreshToken);
+    String findRefreshToken = redisRepository.findBy(claims.getSubject());
+    
+    if(!refreshToken.equals(findRefreshToken)){
+      throw new TokenException(AuthenticationExceptionCode.MISMATCHED_TOKEN);
     }
-  
-    return jwtProvider.parseClaims(accessToken);
+    
+    Member member = memberRepository.findByEmail(claims.getSubject()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    String newAccessToken = jwtProvider.generateAccessToken(member);
+    response.setHeader("Authorization", HEADER_PREFIX + newAccessToken);
+    return jwtProvider.parseClaims(newAccessToken);
+    
   }
   
   public void setAuthenticationToContext(Claims claims){

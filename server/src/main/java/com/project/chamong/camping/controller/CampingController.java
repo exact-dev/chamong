@@ -1,6 +1,7 @@
 package com.project.chamong.camping.controller;
 
 import com.project.chamong.camping.dto.CampingApiDto;
+import com.project.chamong.camping.dto.ContentResponseDto;
 import com.project.chamong.camping.entity.Content;
 import com.project.chamong.camping.mapper.CampingApiMapper;
 import com.project.chamong.camping.service.CampingApiService;
@@ -16,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -85,8 +87,10 @@ public class CampingController {
                 mapX = 0.0;
                 mapY = 0.0;
             } else {
-                mapX = (double) item.get("mapX");
-                mapY = (double) item.get("mapY");
+                BigDecimal bdMapX = (BigDecimal) item.get("mapX");
+                BigDecimal bdMapY = (BigDecimal) item.get("mapY");
+                mapX = bdMapX.doubleValue();
+                mapY = bdMapY.doubleValue();
             }
             String addr1 = String.valueOf(item.get("addr1"));
             String tel = String.valueOf(item.get("tel"));
@@ -148,9 +152,9 @@ public class CampingController {
     public ResponseEntity searchKeyword(
             @RequestParam("page") int page,
             @PathVariable("keyword-id") @Positive int keywordId) {
-        Page<Content> pageContent = campingApiService.findKeyword(page, keywordId);
-        List<Content> content = pageContent.getContent();
-        return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
+        Page<ContentResponseDto> pageContent = campingApiService.findKeyword(page, keywordId);
+        List<ContentResponseDto> content = pageContent.getContent();
+        return new ResponseEntity<>(content, HttpStatus.OK);
     }
 
     // 캠핑장 검색
@@ -160,27 +164,26 @@ public class CampingController {
             @PathVariable("place-id") @Positive int placeId,
             @RequestParam("page") int page,
             @RequestParam(value = "keyword", required = false) String keyword
-    ) {
-        Page<Content> pageContent = campingApiService.findCamping(page - 1, keyword, themaId, placeId);
-        List<Content> content = pageContent.getContent();
+    )
+    {
+        Page<ContentResponseDto> pageContent = campingApiService.findCamping(page - 1, keyword, themaId, placeId);
+        List<ContentResponseDto> content = pageContent.getContent();
 
-        return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
+        return new ResponseEntity<>(content, HttpStatus.OK);
     }
 
     // 캠핑장 메인 페이지
     @GetMapping
-    public ResponseEntity getContents(int page) {
-        Page<Content> pageContent = campingApiService.findContents(page - 1);
-        List<Content> content = pageContent.getContent();
-        return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
+    public ResponseEntity<Page<ContentResponseDto>> getContents(@RequestParam int page) {
+        Page<ContentResponseDto> contents = campingApiService.findContents(page);
+        return new ResponseEntity<>(contents, HttpStatus.OK);
     }
-
 
     // 캠핑장 상세 페이지
     @GetMapping("/{content-id}")
     public ResponseEntity getContent(
             @PathVariable("content-id") @Positive long contentId) {
-        Content content = campingApiService.findContent(contentId);
-        return new ResponseEntity<>(mapper.campingReponse(content), HttpStatus.OK);
+        ContentResponseDto content = campingApiService.findContentResponse(contentId);
+        return new ResponseEntity<>(content, HttpStatus.OK);
     }
 }

@@ -93,7 +93,6 @@ public class CampingApiDto {
 
     @Getter
     @AllArgsConstructor
-    @NoArgsConstructor
     public static class response{
         private long contentId;
 
