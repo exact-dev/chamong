@@ -37,7 +37,8 @@ public class ArticleController {
     // 전체 글 조회 - 15개씩 보여주기
     @GetMapping("/articles")
     public ResponseEntity<Page<ArticleDto.Response>> getAllArticles(@RequestParam(value = "keyword", required = false) String keyword,
-                                                                    @RequestParam(value = "page", defaultValue = "0") int page,@RequestParam(value = "size", defaultValue = "15") int size) {
+                                                                    @RequestParam(value = "page", defaultValue = "0") int page,
+                                                                    @RequestParam(value = "size", defaultValue = "15") int size) {
         // 신규 등록 순으로 정렬
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ArticleDto.Response> articles = articleService.getArticles(keyword, pageRequest);
@@ -72,7 +73,8 @@ public class ArticleController {
     
     
     @DeleteMapping("/articles/{id}")
-    public ResponseEntity<Void> deleteArticle(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,@PathVariable Long id) {
+    public ResponseEntity<Void> deleteArticle(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
+                                              @PathVariable Long id) {
         articleService.deleteArticle(authorizedMemberDto, id);
         return ResponseEntity.ok().build();
     }

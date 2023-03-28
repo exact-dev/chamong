@@ -19,10 +19,10 @@ public class ArticleDto {
     public static class Response {
         private Long id;
         @NotBlank(message = "제목을 입력해주세요")
-        @Length(max = 100, message = "Title은 100자 이하여야 합니다.")
+//        @Length(max = 100, message = "Title은 100자 이하여야 합니다.")
         private String title;
         @NotBlank(message = "내용을 입력해주세요")
-        @Length(max = 1000, message = "content는 1000자 이하여야 합니다.")
+//        @Length(max = 1000, message = "content는 1000자 이하여야 합니다.")
         private String content;
         private String nickname;
         private String profileImg;
@@ -41,13 +41,11 @@ public class ArticleDto {
     @Getter
     @Setter
     public static class Post {
-        private String nickname;
-        private String profileImg;
         @NotBlank(message = "제목을 입력해주세요")
-        @Length(max = 100, message = "Title은 100자 이하여야 합니다.")
+        //@Length(max = 30, message = "Title은 30자 이하여야 합니다.")
         private String title;
         @NotBlank(message = "내용을 입력해주세요")
-        @Length(max = 1000, message = "content는 1000자 이하여야 합니다.")
+        //@Length(max = 300, message = "content는 300자 이하여야 합니다.")
         private String content;
         private String articleImg;
     }

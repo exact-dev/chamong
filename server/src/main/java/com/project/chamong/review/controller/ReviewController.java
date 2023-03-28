@@ -12,7 +12,10 @@ import com.project.chamong.review.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/review")
@@ -36,6 +39,7 @@ public class ReviewController {
         this.mapper = mapper;
     }
 
+    // 리뷰 추가
     @PostMapping("/{content-id}")
     public ResponseEntity postReview(@PathVariable("content-id") long contentId,
                                      @AuthenticationPrincipal AuthorizedMemberDto authorizedMember,
@@ -48,5 +52,24 @@ public class ReviewController {
         Review createdReview = reviewService.createReview(review);
 
         return new ResponseEntity<>(mapper.reviewResponse(createdReview), HttpStatus.CREATED);
+    }
+
+    // 리뷰 수정
+    @PatchMapping("/{review-id}")
+    public ResponseEntity<?> patchReview(@PathVariable("review-id") long reviewId,
+                                        @Valid @RequestBody ReviewDto.Patch requestBody){
+
+        Review review = reviewService.updateReview(reviewId, mapper.reviewPatchDtoToReview(requestBody));
+
+        return new ResponseEntity<>(mapper.reviewResponse(review), HttpStatus.OK);
+    }
+
+
+    // 리뷰 삭제
+    @DeleteMapping("/{review-id}")
+    public ResponseEntity<?> deleteReview(@PathVariable("review-id") long reviewId) {
+        reviewService.deleteReview(reviewId);
+        String result = "리뷰가 정상적으로 삭제되었습니다.";
+        return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
     }
 }

@@ -8,6 +8,7 @@ import com.project.chamong.member.entity.Member;
 import org.mapstruct.Mapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
@@ -30,9 +31,9 @@ public interface ArticleMapper {
           .memberId(article.getMember().getId())
           .viewCnt(article.getViewCnt())
           .likeCnt(article.getLikeCnt())
+          .isLiked(isLiked)
           .createdAt(article.getCreatedAt())
           .updatedAt(article.getUpdatedAt())
-          .isLiked(isLiked)
           .comments(commentsToCommentResponseDto(article.getComments()))
           .build();
     }
@@ -56,19 +57,25 @@ public interface ArticleMapper {
           .build();
     }
     
-    default List<CommentDto.Response> commentsToCommentResponseDto(List<Comment> comments){
+    default List<CommentDto.Response> commentsToCommentResponseDto(List<Comment> comments) {
         return comments.stream()
           .map(comment ->
             CommentDto.Response.builder()
               .id(comment.getId())
               .content(comment.getContent())
               .articleId(comment.getArticle().getId())
+              .memberId(Optional.ofNullable(comment.getMember()).map(Member::getId).orElse(null))
+              .nickname(Optional.ofNullable(comment.getMember()).map(Member::getNickname).orElse(null))
+              .profileImg(Optional.ofNullable(comment.getMember()).map(Member::getProfileImg).orElse(null))
               .memberId(comment.getMember().getId())
               .nickname(comment.getMember().getNickname())
               .profileImg(comment.getMember().getProfileImg())
               .createdAt(comment.getCreatedAt())
               .updatedAt(comment.getUpdatedAt())
-              .build()).collect(Collectors.toList());
+              .build())
+          .peek(System.out::println) // log 확인
+          .collect(Collectors.toList());
         
     }
+    
 }
