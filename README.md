@@ -36,7 +36,8 @@
 ## ✨ Pages & Features
 <img width="937" alt="스크린샷 2023-03-29 오후 11 10 14" src="https://user-images.githubusercontent.com/116159684/228565917-e797660c-4ed0-4587-a022-00358fdcd8ef.png">
 <br>
-## 🔧 Skills
+  
+### 🔧 Skills
 
 ### Tools
 | Git | Github | Discord |Notion|Figma|Adobe|kakaomap|
