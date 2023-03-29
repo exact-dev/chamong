@@ -34,8 +34,8 @@
 - 자료 공유, 회의 등은 디스코드를 이용합니다.  
 
 ## ✨ Pages & Features
-<br><img width="937" alt="스크린샷 2023-03-29 오후 11 10 14" src="https://user-images.githubusercontent.com/116159684/228565917-e797660c-4ed0-4587-a022-00358fdcd8ef.png">
-
+<img width="937" alt="스크린샷 2023-03-29 오후 11 10 14" src="https://user-images.githubusercontent.com/116159684/228565917-e797660c-4ed0-4587-a022-00358fdcd8ef.png">
+<br>
 ## 🔧 Skills
 
 ### Tools
