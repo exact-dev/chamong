@@ -13,7 +13,7 @@
 - **한줄 소개 :** 차박을 통한 여행 공유 커뮤니티 서비스
 - **팀원 :** 김윤혜, 신현민, 이세환, 박진선, 최준영, 김연주 
 - **발표 문서 :** [💁🏻 Roobits 노션 발표 문서](https://www.notion.so/codestates/beadc96e8884494f8d8f3d1ee89fcff9)
-- **배포 링크 :** [📮 [chamong.com] http://chamongbucket.s3-website.ap-northeast-2.amazonaws.com]
+- **배포 링크 :** [📮 http://chamongbucket.s3-website.ap-northeast-2.amazonaws.com]
 
 ## 🛫 Intro
 > 차량을 이용하여 여행하는 사람들이 모여 정보를 공유하는 커뮤니티
