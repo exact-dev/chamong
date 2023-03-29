@@ -25,8 +25,7 @@
 | :---:  | :---: | :---: | :---: | :---: |:---:|
 |  <img alt="김윤혜" src="https://avatars.githubusercontent.com/u/116159684?v=4" height="100" width="100"> | <img alt="신현민" src="https://avatars.githubusercontent.com/u/115964671?v=4" height="100" width="100"> | <img alt="이세환" src="https://avatars.githubusercontent.com/u/115693464?v=4" height="100" width="100"> | <img alt="박진선" src="https://avatars.githubusercontent.com/u/110804067?v=4" height="100" width="100"> |<img alt="최준영" src="https://avatars.githubusercontent.com/u/115613439?v=4" height="100" width="100"> |<img alt="김연주" src="https://avatars.githubusercontent.com/u/71300495?v=4" height="100" width="100"> |
 |    [@yoonae7](https://github.com/yoonae7) | [@SinHyeonmin](https://github.com/SinHyeonmin) |[@ofcpire](https://github.com/ofcpire) |  [@ParkJinSun](https://github.com/ParkJinSun) |[@exact-dev](https://github.com/exact-dev) |[@kyeonju23](https://github.com/kyeonju23) | 
-|<p align="left">- 메인 페이지<br/>- 차박지 상세페이지<br/>- 위시리스트 페이지<br/>- 검색기능<br/>- 빌드 및 s3 배포</p>|<p align="left">- 페이지 타이틀 헤더<br/>- 페이지네이션</p>|<p align="left">- 마이 페이지<br/>- 지도 API 적용<br/>- 글 작성 모달<br/>- 모바일 UI 디자인<br/></p>|<p align="left">|<p align="left">|<p align="left">|
-
+|<p align="left">- 메인 페이지<br/>- 차박지 상세페이지<br/>- 위시리스트 페이지<br/>- 검색기능<br/>- 빌드 및 s3 배포</p>|<p align="left">- 페이지 타이틀 헤더<br/>- 페이지네이션</p>|<p align="left">- 마이 페이지<br/>- 지도 API 적용<br/>- 글 작성 모달<br/>- 모바일 UI 디자인<br/></p>|<p align="left">- 스프링 시큐리티를 이용한 보안 기능 구현<br>- 회원 관리 기능 구현<br>- JWT 발급 및 Redis DB 저장 관리 기능 구현<br>- Oauth2.0 구글 소셜 로그인 기능 구현<br>- 회원에 한하여 방문 했던 캠핑 장소 저장 및 나만의 차박지 등록 및 관리 기능 구현|<p align="left">- RestTemplate을 통한 공공데이터 사용<br>- 캠핑장 리뷰 및 별점, 북마크 추가 기능<br>- 키워드 검색 및 전체 검색 구현<br>- S3 이미지 관리<br>- RDS를 통한 DB관리<br>- AWS 배포|<p align="left">- 게시판과 댓글 CRUD <br>- 게시글 좋아요 기능<br>- 상세페이지, 인기글 조회 <br>- 키워드 검색|
   
 ### 커뮤니케이션 방식
 - 매일 10:00부터 16:00 사이에는 온라인 상태를 유지합니다.
