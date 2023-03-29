@@ -12,7 +12,6 @@
 - **프로젝트 기간 :** 2023.03.03 - 2022.03.29
 - **한줄 소개 :** 차박을 통한 여행 공유 커뮤니티 서비스
 - **팀원 :** 김윤혜, 신현민, 이세환, 박진선, 최준영, 김연주 
-- **발표 문서 :** [💁🏻 Chamong 노션 발표 문서](https://www.notion.so/codestates/beadc96e8884494f8d8f3d1ee89fcff9)
 - **배포 링크 :** [📮 chamong.com](http://chamongbucket.s3-website.ap-northeast-2.amazonaws.com/) 
 
 ## 🛫 Intro
