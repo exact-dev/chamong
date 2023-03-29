@@ -1,6 +1,8 @@
 <h1> 🚙CHAMONG</h1>
 <div  align="center">
   <img width="5%" src="http://chamongbucket.s3-website.ap-northeast-2.amazonaws.com/static/media/logo_mascot.810dd0c832d355a75274fc8cba8dcec6.svg" alt="chamong">
+    <img width="5%" src="http://chamongbucket.s3-website.ap-northeast-2.amazonaws.com/static/media/logo_kor.d6918151f4b9374f5633fb99e53226ab.svg"
+         alt="chamong">
 </div>
 </br>
 <h3 align="center"> 차박 여행 공유 커뮤니티, CHAMONG!</h3>
