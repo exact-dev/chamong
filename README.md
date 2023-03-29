@@ -33,7 +33,7 @@
 - 매일 오전 09:30, 오후 16:00에 진행된 개발에 대한 간단한 브리핑을 진행하고, 이슈가 없다면 빠르게 끝냅니다.
 - 자료 공유, 회의 등은 디스코드를 이용합니다.  
 
-✨ Pages & Features
+## ✨ Pages & Features
 <br><img width="937" alt="스크린샷 2023-03-29 오후 11 10 14" src="https://user-images.githubusercontent.com/116159684/228565917-e797660c-4ed0-4587-a022-00358fdcd8ef.png">
 
 ## 🔧 Skills
