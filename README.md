@@ -22,7 +22,7 @@
 
 ## 👨‍👩‍👧‍👦 Team
 |  김윤혜<br>(FE) | 신현민<br>(FE) |이세환<br>(FE) |박진선<br>(BE) | 최준영<br>(BE) | 김연주<br>(BE) |
-| 로그인  | :---: | :---: | :---: | :---: |:---:|
+| :---:  | :---: | :---: | :---: | :---: |:---:|
 |  <img alt="김윤혜" src="https://avatars.githubusercontent.com/u/116159684?v=4" height="100" width="100"> | <img alt="신현민" src="https://avatars.githubusercontent.com/u/115964671?v=4" height="100" width="100"> | <img alt="이세환" src="https://avatars.githubusercontent.com/u/115693464?v=4" height="100" width="100"> | <img alt="박진선" src="https://avatars.githubusercontent.com/u/110804067?v=4" height="100" width="100"> |<img alt="최준영" src="https://avatars.githubusercontent.com/u/115613439?v=4" height="100" width="100"> |<img alt="김연주" src="https://avatars.githubusercontent.com/u/71300495?v=4" height="100" width="100"> |
 |    [@yoonae7](https://github.com/yoonae7) | [@SinHyeonmin](https://github.com/SinHyeonmin) |[@ofcpire](https://github.com/ofcpire) |  [@ParkJinSun](https://github.com/ParkJinSun) |[@exact-dev](https://github.com/exact-dev) |[@kyeonju23](https://github.com/kyeonju23) | 
 |<p align="left">|<p align="left">|<p align="left">|<p align="left">|<p align="left">|<p align="left">|
