@@ -25,9 +25,9 @@
 | :---:  | :---: | :---: | :---: | :---: |:---:|
 |  <img alt="김윤혜" src="https://avatars.githubusercontent.com/u/116159684?v=4" height="100" width="100"> | <img alt="신현민" src="https://avatars.githubusercontent.com/u/115964671?v=4" height="100" width="100"> | <img alt="이세환" src="https://avatars.githubusercontent.com/u/115693464?v=4" height="100" width="100"> | <img alt="박진선" src="https://avatars.githubusercontent.com/u/110804067?v=4" height="100" width="100"> |<img alt="최준영" src="https://avatars.githubusercontent.com/u/115613439?v=4" height="100" width="100"> |<img alt="김연주" src="https://avatars.githubusercontent.com/u/71300495?v=4" height="100" width="100"> |
 |    [@yoonae7](https://github.com/yoonae7) | [@SinHyeonmin](https://github.com/SinHyeonmin) |[@ofcpire](https://github.com/ofcpire) |  [@ParkJinSun](https://github.com/ParkJinSun) |[@exact-dev](https://github.com/exact-dev) |[@kyeonju23](https://github.com/kyeonju23) | 
-|<p align="left">- 메인 페이지<br/>- 차박지 상세페이지<br/>- 위시리스트 페이지<br/>- 검색기능<br/>- 빌드 및 s3 배포</p>|<p align="left">- 페이지 타이틀 헤더<br/>- 페이지네이션</p>|<p align="left">|<p align="left">|<p align="left">|<p align="left">|
+|<p align="left">- 메인 페이지<br/>- 차박지 상세페이지<br/>- 위시리스트 페이지<br/>- 검색기능<br/>- 빌드 및 s3 배포</p>|<p align="left">- 페이지 타이틀 헤더<br/>- 페이지네이션</p>|<p align="left">- 마이 페이지<br/>- 지도 API 적용<br/>- 글 작성 모달<br/>- 모바일 UI 디자인<br/></p>|<p align="left">|<p align="left">|<p align="left">|
 
-
+  
 ### 커뮤니케이션 방식
 - 매일 10:00부터 16:00 사이에는 온라인 상태를 유지합니다.
 - 매일 오전 09:30, 오후 16:00에 진행된 개발에 대한 간단한 브리핑을 진행하고, 이슈가 없다면 빠르게 끝냅니다.
