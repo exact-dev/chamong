@@ -57,8 +57,9 @@ public class ArticleController {
     @PostMapping("/articles")
     public ResponseEntity<ArticleDto.Response> createArticle(@RequestPart("articleCreate") ArticleDto.Post postDto,
                                                              @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
-                                                             @RequestPart() MultipartFile articleImg) {
+                                                             @RequestPart MultipartFile articleImg) {
         ArticleDto.Response response = articleService.createArticle(authorizedMemberDto,postDto, articleImg);
+        
         return ResponseEntity.ok(response);
     }
     
@@ -67,6 +68,7 @@ public class ArticleController {
                                                              @PathVariable Long id,
                                                              @RequestPart("articleUpdate") ArticleDto.Patch patchDto,
                                                              @RequestPart MultipartFile articleImg) {
+        
         ArticleDto.Response response = articleService.updateArticle(authorizedMemberDto, id, patchDto, articleImg);
         return ResponseEntity.ok(response);
     }

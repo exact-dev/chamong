@@ -23,22 +23,25 @@ public class MyPlace extends BaseTime {
     // 설명
     private String memo;
     
-    // 내가 찾은 차박지 이미지
+    @Column(name = "place_img")
     String placeImg;
     
     // 키워드
-    @ElementCollection
-    @CollectionTable(name = "my_place_keyword")
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "my_place_keyword", joinColumns = @JoinColumn(name = "my_place_id", referencedColumnName = "id"))
     @Column(name = "keyword")
     private List<String> keywords = new ArrayList<>();
     
     // 위도
+    @Column(name = "map_x")
     private Double mapX;
     
     // 경도
+    @Column(name = "map_y")
     private Double mapY;
     
     // 공유 상태
+    @Column(name = "is_shared")
     private Boolean isShared;
 
     // 멤버 고유 키

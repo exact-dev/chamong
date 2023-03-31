@@ -45,7 +45,11 @@ public class MyPlaceService {
     public MyPlaceDto.Response saveMyPlace(MyPlaceDto.Post postDto, AuthorizedMemberDto authorizedMemberDto, MultipartFile placeImg){
         Member findMember = memberService.findByEmail(authorizedMemberDto.getEmail());
         
-        postDto.setMyPlaceImg(s3Service.getDefaultCampingImg());
+        if(placeImg.isEmpty()){
+            postDto.setMyPlaceImg(s3Service.getDefaultCampingImg());
+        }else {
+            postDto.setMyPlaceImg(s3Service.uploadFile(placeImg, dirName));
+        }
         
         MyPlace myPlace = MyPlace.createMyplace(postDto);
         myPlace.setMember(findMember);
@@ -60,7 +64,9 @@ public class MyPlaceService {
         
         verifyPermission(findMyPlace, authorizedMemberDto);
         
-        patchDto.setMyPlaceImg(s3Service.uploadFile(placeImg, dirName));
+        if(!placeImg.isEmpty()){
+            patchDto.setMyPlaceImg(s3Service.uploadFile(placeImg, dirName));
+        }
         
         findMyPlace.updateMyPlace(patchDto);
         

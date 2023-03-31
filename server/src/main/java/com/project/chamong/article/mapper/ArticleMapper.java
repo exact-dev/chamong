@@ -14,11 +14,14 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public interface ArticleMapper {
     default ArticleDto.Response articleResponse(Article article, Member member) {
+        Boolean isLiked = false;
         
-        Boolean isLiked = member.getArticleLikes()
-          .stream()
-          .anyMatch(memberArticleLike -> article.getArticleLikes().stream()
-            .anyMatch(articleArticleLike -> memberArticleLike.getId() == articleArticleLike.getId()));
+        if(member != null){
+            isLiked = member.getArticleLikes()
+              .stream()
+              .anyMatch(memberArticleLike -> article.getArticleLikes().stream()
+                .anyMatch(articleArticleLike -> memberArticleLike.getId() == articleArticleLike.getId()));
+        }
         
         return ArticleDto.Response.builder()
           .id(article.getId())

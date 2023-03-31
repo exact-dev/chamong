@@ -67,9 +67,13 @@ public class ArticleService {
     // 상세페이지 - 게시글과 댓글 조회
     @Transactional
     public ArticleDto.Response getArticle(Long id, AuthorizedMemberDto authorizedMemberDto) {
+        Member findMember = null;
         Article article = articleRepository.findById(id)
           .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND));
-        Member findMember = memberService.findByEmail(authorizedMemberDto.getEmail());
+        if(authorizedMemberDto != null){
+            findMember = memberService.findByEmail(authorizedMemberDto.getEmail());
+        }
+        
         increaseViewCnt(id);
         
         //댓글 createdAt 기준으로 내림차순 정렬
@@ -100,8 +104,11 @@ public class ArticleService {
     public ArticleDto.Response createArticle(AuthorizedMemberDto authorizedMemberDto, ArticleDto.Post postDto, MultipartFile articleImg) {
         Member member = memberRepository.findById(authorizedMemberDto.getId())
           .orElseThrow(() -> new IllegalArgumentException("Member not found with ID: " + authorizedMemberDto.getId()));
-    
-        postDto.setArticleImg(s3Service.uploadFile(articleImg, dirName));
+        
+        
+        if(!articleImg.isEmpty()){
+            postDto.setArticleImg(s3Service.uploadFile(articleImg, dirName));
+        }
         
         Article article = Article.createArticle(postDto, member);
         
@@ -117,8 +124,10 @@ public class ArticleService {
             throw new IllegalStateException("Only the author of the article can delete it.");
             
         }
-    
-        patchDto.setArticleImg(s3Service.uploadFile(articleImg, dirName));
+        if(!articleImg.isEmpty()){
+            patchDto.setArticleImg(s3Service.uploadFile(articleImg, dirName));
+        }
+        
         
         article.update(patchDto);
         articleRepository.save(article);

@@ -21,8 +21,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberController {
-  private final MemberMapper mapper;
   private final MemberService memberService;
+  
   @PostMapping
   public ResponseEntity<?> postMember(@Valid @RequestBody MemberDto.Post postDto) {
     MemberDto.Response response = memberService.saveMember(postDto);

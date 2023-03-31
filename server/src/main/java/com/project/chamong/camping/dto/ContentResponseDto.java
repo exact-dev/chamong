@@ -1,6 +1,7 @@
 package com.project.chamong.camping.dto;
 
 import com.project.chamong.camping.entity.Content;
+import com.project.chamong.review.dto.ReviewDto;
 import com.project.chamong.review.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ContentResponseDto {
-    private List<Review> reviews;
+    private List<ReviewDto.Response> reviews;
 
     private double totalRating;
 

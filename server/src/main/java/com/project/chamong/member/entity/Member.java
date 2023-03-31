@@ -1,5 +1,6 @@
 package com.project.chamong.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.chamong.article.entity.Article;
 import com.project.chamong.article.entity.ArticleLike;
 import com.project.chamong.article.entity.Comment;
@@ -41,6 +42,7 @@ public class Member extends BaseTime {
   
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "role_member", joinColumns = @JoinColumn(name = "member_id", referencedColumnName = "id"))
+  @Column(name = "role")
   private List<String> roles = new ArrayList<>();
   
   @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)

@@ -5,6 +5,7 @@ import com.project.chamong.camping.entity.Content;
 import com.project.chamong.camping.repository.CampingApiRepository;
 import com.project.chamong.exception.BusinessLogicException;
 import com.project.chamong.exception.ExceptionCode;
+import com.project.chamong.review.dto.ReviewDto;
 import com.project.chamong.review.entity.Review;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.data.domain.*;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -61,11 +63,15 @@ public class CampingApiService {
 
     private ContentResponseDto convertToContentResponse(Content content) {
         ContentResponseDto dto = new ContentResponseDto();
-        List<Review> review = campingApiRepository.findReview(content.getContentId());
-
-
-        // review rating sum
-        double totalRating = review.stream()
+        List<Review> reviews = campingApiRepository.findReview(content.getContentId());
+    
+        List<ReviewDto.Response> reviewResponses = reviews.stream()
+          .map(review -> new ReviewDto.Response(review.getReviewId(), review.getRating(), review.getContent()))
+          .collect(Collectors.toList());
+    
+    
+        // reviews rating sum
+        double totalRating = reviews.stream()
                         .mapToDouble(Review::getRating)
                 .average()
                 .orElse(0.0);
@@ -99,7 +105,8 @@ public class CampingApiService {
         dto.setPosblFcltyCl(content.getPosblFcltyCl());
         dto.setLctCl(content.getLctCl());
         dto.setTotalRating(totalRating);
-        dto.setReviews(review);
+//        dto.setReviews(reviews);
+        dto.setReviews(reviewResponses);
         return dto;
     }
 

@@ -55,8 +55,10 @@ public class MemberService {
   @Transactional
   public MemberDto.Response updateMember(MemberDto.Patch patchDto, MultipartFile profileImg, AuthorizedMemberDto authorizedMemberDto) {
     Member findMember = findByEmail(authorizedMemberDto.getEmail());
-  
-    patchDto.setProfileImg(s3Service.uploadFile(profileImg, dirName));
+    
+    if(!profileImg.isEmpty()){
+      patchDto.setProfileImg(s3Service.uploadFile(profileImg, dirName));
+    }
     
     findMember.updateMember(patchDto);
   

@@ -44,12 +44,12 @@ public class SecurityConfiguration {
       .csrf().disable()
       .headers().frameOptions().sameOrigin()
       .and()
-      .cors(Customizer.withDefaults())
+      .cors().and()
       .apply(new JwtFilterConfiguration(jwtProvider, redisRepository, memberRepository))
       .and()
       .exceptionHandling()
       .accessDeniedHandler(new MemberAccessDeniedHandler())
-      .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+//      .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
       .and()
       .authorizeHttpRequests(authorize -> { authorize
         .antMatchers(HttpMethod.PATCH,"/members").hasRole("USER")
@@ -74,6 +74,7 @@ public class SecurityConfiguration {
         .antMatchers(HttpMethod.POST,"/visited-places/*").hasRole("USER")
         .antMatchers(HttpMethod.GET,"/visited-places").hasRole("USER")
         .antMatchers(HttpMethod.DELETE,"/visited-places/*").hasRole("USER")
+        .antMatchers(HttpMethod.GET,"/articles/*").permitAll()
         .antMatchers(HttpMethod.GET,"/pick-places/shared").permitAll()
         .antMatchers(HttpMethod.GET,"/main/**").permitAll()
         .antMatchers(HttpMethod.POST,"/members").permitAll()
@@ -86,13 +87,15 @@ public class SecurityConfiguration {
   }
   
   @Bean
-  CorsConfigurationSource corsConfig(){
+  CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowCredentials(true);
     corsConfiguration.setAllowedOrigins(Arrays.asList("http://chamongbucket.s3-website.ap-northeast-2.amazonaws.com/","http://localhost:3000/"));
-    corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Refresh"));
+    corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Refresh", "content-type"));
     corsConfiguration.setExposedHeaders(Arrays.asList("Authorization", "Refresh"));
-    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PATCH"));
+    corsConfiguration.setAllowedMethods(Arrays.asList(
+      HttpMethod.POST.name(), HttpMethod.PATCH.name(), HttpMethod.GET.name(), HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name()));
+    corsConfiguration.addAllowedHeader("GET");
     corsConfiguration.setMaxAge(3600l);
   
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -100,6 +103,7 @@ public class SecurityConfiguration {
     
     return source;
   }
+  
   @Bean
   PasswordEncoder passwordEncoder(){
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
