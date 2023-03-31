@@ -49,7 +49,7 @@ public class SecurityConfiguration {
       .and()
       .exceptionHandling()
       .accessDeniedHandler(new MemberAccessDeniedHandler())
-//      .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+      .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
       .and()
       .authorizeHttpRequests(authorize -> { authorize
         .antMatchers(HttpMethod.PATCH,"/members").hasRole("USER")
