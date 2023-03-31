@@ -88,16 +88,31 @@ public class SecurityConfiguration {
   
   @Bean
   CorsConfigurationSource corsConfigurationSource() {
+//    CorsConfiguration corsConfiguration = new CorsConfiguration();
+//    corsConfiguration.setAllowCredentials(true);
+//    corsConfiguration.setAllowedOrigins(Arrays.asList("http://chamongbucket.s3-website.ap-northeast-2.amazonaws.com/","http://localhost:3000/"));
+//    corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Refresh", "content-type"));
+//    corsConfiguration.setExposedHeaders(Arrays.asList("Authorization", "Refresh"));
+//    corsConfiguration.setAllowedMethods(Arrays.asList(
+//      HttpMethod.POST.name(), HttpMethod.PATCH.name(), HttpMethod.GET.name(), HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name()));
+//    corsConfiguration.addAllowedHeader("GET");
+//    corsConfiguration.setMaxAge(3600l);
+//
+//    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//    source.registerCorsConfiguration("/**", corsConfiguration);
+//
+//    return source;
+    
     CorsConfiguration corsConfiguration = new CorsConfiguration();
     corsConfiguration.setAllowCredentials(true);
-    corsConfiguration.setAllowedOrigins(Arrays.asList("http://chamongbucket.s3-website.ap-northeast-2.amazonaws.com/","http://localhost:3000/"));
-    corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Refresh", "content-type"));
+    corsConfiguration.addAllowedOriginPattern("*");
     corsConfiguration.setExposedHeaders(Arrays.asList("Authorization", "Refresh"));
-    corsConfiguration.setAllowedMethods(Arrays.asList(
-      HttpMethod.POST.name(), HttpMethod.PATCH.name(), HttpMethod.GET.name(), HttpMethod.DELETE.name(), HttpMethod.OPTIONS.name()));
-    corsConfiguration.addAllowedHeader("GET");
+    corsConfiguration.addAllowedHeader("*");
+    corsConfiguration.setAllowedMethods(
+      Arrays.asList(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.DELETE.name(), HttpMethod.PATCH.name(), HttpMethod.OPTIONS.name()));
+    
     corsConfiguration.setMaxAge(3600l);
-  
+    
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", corsConfiguration);
     
@@ -108,4 +123,5 @@ public class SecurityConfiguration {
   PasswordEncoder passwordEncoder(){
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
   }
+  
 }
