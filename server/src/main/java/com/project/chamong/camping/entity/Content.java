@@ -1,24 +1,26 @@
 package com.project.chamong.camping.entity;
 
 import com.project.chamong.camping.dto.CampingApiDto;
+import com.project.chamong.review.entity.Review;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "contentId")
-    private int contentId;
+    private long contentId;
 
     // 업체명
     @Column(name = "facltNm")

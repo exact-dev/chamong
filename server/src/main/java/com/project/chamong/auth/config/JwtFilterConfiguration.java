@@ -30,12 +30,11 @@ public class JwtFilterConfiguration extends SecurityConfigurerAdapter<DefaultSec
     AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
     
     jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
-    jwtAuthenticationFilter.setFilterProcessesUrl("members/login");
+    jwtAuthenticationFilter.setFilterProcessesUrl("/members/login");
     jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());
     jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());
     
     builder.addFilter(jwtAuthenticationFilter);
     builder.addFilterAfter(jwtVerificationFilter, JwtAuthenticationFilter.class);
-  
   }
 }

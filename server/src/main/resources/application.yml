@@ -3,22 +3,35 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://chamong-mysql.cita1h8oazuc.ap-northeast-2.rds.amazonaws.com:3306/chamongdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
-    password: 79647964
+    password : 79647964
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-    generate-ddl: true
+#    generate-ddl: true
     hibernate:
-      naming:
-        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#      naming:
+#        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: none
-#  h2:
-#    console:
-#      enabled: true
-#      path: /h2
-#  datasource:
-#    url: jdbc:h2:mem:test
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  redis:
+    host: localhost
+    port: 6379
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 177455669845-2r2hiar8aoibtknbo7546ii7cav76hk0.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
 
 logging:
   level:
@@ -30,23 +43,23 @@ logging:
       springframework:
         orm:
           jpa: DEBUG
+#      apache:
+#        coyote:
+#          http11: debug
 
-  redis:
-    host: localhost
-    port: 6379
-    password: wls5177
 
 server:
   servlet:
     encoding:
       force-response: true
-mail:
-  address:
-    admin: admin@gmail.com
+
 jwt.key: park1234123412341234123412341234
+
 jwt:
   access-token-expiration-millisecond: 3600000
   refresh-token-expiration-millisecond: 14400000
+
 admin:
   email: admin@gmail.com
+
 

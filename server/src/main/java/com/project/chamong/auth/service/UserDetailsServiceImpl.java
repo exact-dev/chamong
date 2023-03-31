@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
@@ -27,7 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   }
   @Getter
   @AllArgsConstructor
-  public class UserDetailsImpl implements UserDetails{
+  public class UserDetailsImpl implements UserDetails {
     private Member member;
     
     @Override
@@ -64,5 +65,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public boolean isEnabled() {
       return true;
     }
+
   }
 }
