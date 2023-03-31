@@ -1,6 +1,7 @@
 package com.project.chamong.camping.repository;
 
 import com.project.chamong.camping.entity.Content;
+import com.project.chamong.review.dto.ReviewDto;
 import com.project.chamong.review.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,13 +32,17 @@ public interface CampingApiRepository extends JpaRepository<Content, Long> {
     Page<Content> findContents(Pageable pageable);
 
     // 위시리스트
-    @Query(value = "SELECT content.*, review.*, COUNT(review.content_id) AS total, SUM(review.rating) AS ratings " +
-            "FROM content " +
-            "LEFT JOIN bookmark ON content.content_id = bookmark.content_id " +
-            "RIGHT JOIN review ON content.content_id = review.content_id " +
+    @Query(value = "SELECT *, COUNT(review.content_id) AS total, SUM(review.rating) AS ratings from bookmark " +
+            "INNER JOIN content " +
+            "ON bookmark.content_id = content.content_id " +
+            "LEFT JOIN review " +
+            "ON bookmark.content_id = review.content_id " +
+            "WHERE bookmark.member_id = :memberId " +
             "GROUP BY content.content_id " +
-            "ORDER BY ratings DESC, total DESC", nativeQuery = true)
-    Page<Content> findBookmark(Pageable pageable);
+            "ORDER BY ratings DESC, total DESC ", nativeQuery = true)
+    Page<Content> findBookmark(Pageable pageable, @Param("memberId") long memberId);
+
+
 
     @Query(value = "SELECT r FROM Review r JOIN r.contents c WHERE " +
             "c.contentId = :contentId")

@@ -1,5 +1,6 @@
 package com.project.chamong.camping.controller;
 
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.camping.dto.CampingApiDto;
 import com.project.chamong.camping.dto.ContentResponseDto;
 import com.project.chamong.camping.entity.Content;
@@ -9,9 +10,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.lang.Nullable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -151,8 +155,9 @@ public class CampingController {
     @GetMapping("/search/keyword/{keyword-id}")
     public ResponseEntity searchKeyword(
             @RequestParam("page") int page,
-            @PathVariable("keyword-id") @Positive int keywordId) {
-        Page<ContentResponseDto> pageContent = campingApiService.findKeyword(page, keywordId);
+            @PathVariable("keyword-id") @Positive int keywordId,
+    @AuthenticationPrincipal @Nullable AuthorizedMemberDto authorizedMemberDto) {
+        Page<ContentResponseDto> pageContent = campingApiService.findKeyword(page, keywordId, authorizedMemberDto);
         List<ContentResponseDto> content = pageContent.getContent();
         return new ResponseEntity<>(content, HttpStatus.OK);
     }
@@ -163,10 +168,11 @@ public class CampingController {
             @PathVariable("thema-id") @Positive int themaId,
             @PathVariable("place-id") @Positive int placeId,
             @RequestParam("page") int page,
-            @RequestParam(value = "keyword", required = false) String keyword
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @AuthenticationPrincipal @Nullable AuthorizedMemberDto authorizedMemberDto
     )
     {
-        Page<ContentResponseDto> pageContent = campingApiService.findCamping(page - 1, keyword, themaId, placeId);
+        Page<ContentResponseDto> pageContent = campingApiService.findCamping(page, keyword, themaId, placeId, authorizedMemberDto);
         List<ContentResponseDto> content = pageContent.getContent();
 
         return new ResponseEntity<>(content, HttpStatus.OK);
@@ -174,16 +180,18 @@ public class CampingController {
 
     // 캠핑장 메인 페이지
     @GetMapping
-    public ResponseEntity<Page<ContentResponseDto>> getContents(@RequestParam int page) {
-        Page<ContentResponseDto> contents = campingApiService.findContents(page);
+    public ResponseEntity<Page<ContentResponseDto>> getContents(@RequestParam int page,
+                                                                @AuthenticationPrincipal @Nullable AuthorizedMemberDto authorizedMemberDto) {
+        Page<ContentResponseDto> contents = campingApiService.findContents(page, authorizedMemberDto);
         return new ResponseEntity<>(contents, HttpStatus.OK);
     }
 
     // 캠핑장 상세 페이지
     @GetMapping("/{content-id}")
     public ResponseEntity getContent(
-            @PathVariable("content-id") @Positive long contentId) {
-        ContentResponseDto content = campingApiService.findContentResponse(contentId);
+            @PathVariable("content-id") @Positive long contentId,
+            @AuthenticationPrincipal @Nullable AuthorizedMemberDto authorizedMemberDto) {
+        ContentResponseDto content = campingApiService.findContentResponse(contentId, authorizedMemberDto);
         return new ResponseEntity<>(content, HttpStatus.OK);
     }
 }
