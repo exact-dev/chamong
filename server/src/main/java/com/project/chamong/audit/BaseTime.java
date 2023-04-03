@@ -21,4 +21,12 @@ public abstract class BaseTime {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    public void test(int a, int b){
+    
+    }
+    
+    public void test(int a){
+        
+    }
+    
 }

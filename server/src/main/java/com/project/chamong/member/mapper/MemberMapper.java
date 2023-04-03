@@ -81,6 +81,7 @@ public interface MemberMapper {
     return visitedPlaces.stream()
       .map(visitedPlace -> VisitedPlaceDto.Response.builder()
         .id(visitedPlace.getId())
+        .contentId(visitedPlace.getContent().getContentId())
         .memberId(visitedPlace.getMember().getId())
         .facltNm(visitedPlace.getContent().getFacltNm())
         .lineIntro(visitedPlace.getContent().getLineIntro())

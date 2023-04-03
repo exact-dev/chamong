@@ -37,9 +37,12 @@ public class MemberDto {
     @NotBlank(message = "nickname 는 공백일 수 없습니다.")
     @Length(max = 20, message = "nickname 길이는 최대 20자 이하로 입력해 주세요.")
     private String nickname;
+    
     private String about;
+    
     @NotBlank(message = "carName 는 공백일 수 없습니다.")
     private String carName;
+    
     @NotBlank(message = "oilInfo 는 공백일 수 없습니다.")
     private String oilInfo;
     
@@ -49,6 +52,7 @@ public class MemberDto {
   
   @Setter
   @Getter
+  @AllArgsConstructor
   public static class Response{
     private Long id;
     private String email;

@@ -68,6 +68,10 @@ public class MyPlaceService {
             patchDto.setMyPlaceImg(s3Service.uploadFile(placeImg, dirName));
         }
         
+        if(placeImg.isEmpty()){
+            patchDto.setMyPlaceImg(findMyPlace.getPlaceImg());
+        }
+        
         findMyPlace.updateMyPlace(patchDto);
         
         return mapper.myPlaceToResponse(findMyPlace);

@@ -81,7 +81,7 @@ public class Member extends BaseTime {
       .profileImg(postDto.getProfileImg())
       .roles(postDto.getRoles())
       .about("자기 소개를 작성 해보세요.")
-      .carName("차량 정보를 입력 해보세요.")
+      .carName("차량 정보 없음")
       .oilInfo("휘발유")
       .build();
   }

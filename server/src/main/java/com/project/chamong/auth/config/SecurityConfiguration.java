@@ -27,7 +27,6 @@ import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = true)
 public class SecurityConfiguration {
   private final JwtProvider jwtProvider;
   private final TokenRedisRepository redisRepository;
@@ -49,7 +48,7 @@ public class SecurityConfiguration {
       .and()
       .exceptionHandling()
       .accessDeniedHandler(new MemberAccessDeniedHandler())
-      .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
+//      .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
       .and()
       .authorizeHttpRequests(authorize -> { authorize
         .antMatchers(HttpMethod.PATCH,"/members").hasRole("USER")
@@ -81,6 +80,9 @@ public class SecurityConfiguration {
         .antMatchers(HttpMethod.POST,"/members/login").permitAll();
       })
       .oauth2Login()
+      .authorizationEndpoint()
+      .baseUri("/oauth/login")
+      .and()
       .successHandler(new Oauth2MemberSuccessHandler(jwtProvider, memberRepository, redisRepository, s3Service));
     
     return http.build();

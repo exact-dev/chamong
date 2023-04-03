@@ -49,7 +49,6 @@ public class MyPlaceController {
     
         MyPlaceDto.Response response = myPlaceService.saveMyPlace(postDto, authorizedMemberDto, placeImg);
     
-    
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     

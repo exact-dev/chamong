@@ -22,6 +22,7 @@ public class VisitedPlaceDto {
         // 장소 ID
         private Long id;
         private Long memberId;
+        private Long contentId;
         private String facltNm;
         private String lineIntro;
         private String addr1;
