@@ -7,25 +7,24 @@ import com.project.chamong.auth.handler.MemberAuthenticationFailureHandler;
 import com.project.chamong.auth.handler.MemberAuthenticationSuccessHandler;
 import com.project.chamong.auth.jwt.JwtProvider;
 import com.project.chamong.auth.repository.TokenRedisRepository;
+import com.project.chamong.auth.utils.CustomAuthorityUtils;
 import com.project.chamong.member.repository.MemberRepository;
-import com.project.chamong.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 @RequiredArgsConstructor
 public class JwtFilterConfiguration extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
   private final JwtProvider jwtProvider;
   private final TokenRedisRepository redisRepository;
   private final MemberRepository memberRepository;
+  private final CustomAuthorityUtils customAuthorityUtils;
   @Override
   public void configure(HttpSecurity builder) throws Exception {
     JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtProvider, redisRepository);
-    JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtProvider, redisRepository, memberRepository);
+    JwtVerificationFilter jwtVerificationFilter = new JwtVerificationFilter(jwtProvider, redisRepository, memberRepository, customAuthorityUtils);
     
     AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
     

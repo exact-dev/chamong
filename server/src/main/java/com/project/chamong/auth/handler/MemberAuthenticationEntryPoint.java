@@ -26,7 +26,7 @@ public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response, HttpStatus.valueOf(exceptionCode.getStatus()),exceptionCode.getMessage());
     } else if(exception instanceof SignatureException){
       Responder.sendErrorResponse(response, HttpStatus.UNAUTHORIZED, exception.getMessage());
-    } else if (exception instanceof InsufficientAuthenticationException){
+    } else if (authException instanceof InsufficientAuthenticationException){
       Responder.sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "비회원 입니다. 접근할 권한이 없습니다.");
     }
   }

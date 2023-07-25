@@ -1,55 +1,66 @@
 package com.project.chamong.place.controller;
 
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.place.dto.MyPlaceDto;
 import com.project.chamong.place.service.MyPlaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("pick-places")
+@Validated
 public class MyPlaceController {
     private final MyPlaceService myPlaceService;
-
-    // 전체 장소 목록 조회 - 내 차박지 목록 조회
-    @GetMapping("/pick")
-    public List<MyPlaceDto.Response> findAll(){
-        return myPlaceService.findAll();
-    }
-
-    // 단일 장소 조회
-    @GetMapping("/pick/{id}")
-    public ResponseEntity<MyPlaceDto.Response> findById(@PathVariable Long id){
-        return myPlaceService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+    
     // 공유된 장소 조회 - 공유된 차박지 목록 조회
-    @GetMapping("/pick/shared")
-    public List<MyPlaceDto.Response> findAllShared(){
-        return myPlaceService.findAllShared();
+    @GetMapping("/shared")
+    public ResponseEntity<?> getMyPlaceIsShared(){
+        List<MyPlaceDto.Response> response = myPlaceService.findMyPlaceByIsShared();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    
+    // 내가 등록한 차박지만 조회
+    @GetMapping("/member")
+    public ResponseEntity<?> getMyPlace(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+        List<MyPlaceDto.Response> response = myPlaceService.findMyPlaceByMember(authorizedMemberDto);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // 장소 생성
     @PostMapping
-    public ResponseEntity<MyPlaceDto.Response> create(@RequestBody @Valid MyPlaceDto.Post postDto){
-        MyPlaceDto.Response response = myPlaceService.create(postDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<?> postMyPlace(@RequestPart("postMyPlace") @Valid MyPlaceDto.Post postDto,
+                                         @RequestPart(required = false) MultipartFile placeImg,
+                                         @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+        MyPlaceDto.Response response = myPlaceService.saveMyPlace(postDto, authorizedMemberDto, placeImg);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    
     // 장소 수정
-    @PatchMapping("/pick/{id}")
-    public ResponseEntity<MyPlaceDto.Response> update(@PathVariable Long id, @RequestBody @Valid MyPlaceDto.Patch patchDto){
-        MyPlaceDto.Response response = myPlaceService.update(id, patchDto);
-        return ResponseEntity.ok(response);
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> patchMyPlace(@RequestPart("patchMyPlace") @Valid MyPlaceDto.Patch patchDto,
+                                          @RequestPart(required = false) MultipartFile placeImg,
+                                          @PathVariable @Positive Long id,
+                                          @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+        MyPlaceDto.Response response = myPlaceService.updateMyPlace(id, patchDto, authorizedMemberDto, placeImg);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     // 장소 삭제
-    @DeleteMapping("/pick/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
-        myPlaceService.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMyPlace(@PathVariable @Positive Long id,
+                                           @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto){
+        myPlaceService.deleteMyPlace(id, authorizedMemberDto);
+        String message = "등록한 차박지가 정상적으로 삭제 되었습니다.";
+        
+        return new ResponseEntity<>(message, HttpStatus.NO_CONTENT);
     }
 }

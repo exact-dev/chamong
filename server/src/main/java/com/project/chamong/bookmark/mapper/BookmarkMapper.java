@@ -6,7 +6,5 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface BookmarkMapper {
-    Bookmark bookmarkPostDtoToBookmark(BookmarkDto.Post requestBody);
-
     BookmarkDto.Response bookmarkResponse(Bookmark bookmark);
 }

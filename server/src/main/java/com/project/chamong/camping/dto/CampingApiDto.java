@@ -1,15 +1,13 @@
 package com.project.chamong.camping.dto;
 
-import com.project.chamong.review.entity.Review;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 public class CampingApiDto {
 
     @Getter
+    @Builder
     @AllArgsConstructor
     public static class Post{
         // 업체명
@@ -93,9 +91,8 @@ public class CampingApiDto {
 
     @Getter
     @AllArgsConstructor
-    @NoArgsConstructor
-    public static class response{
-        private long contentId;
+    public static class Response {
+        private Long id;
 
         // 업체명
         private String facltNm;
@@ -140,10 +137,10 @@ public class CampingApiDto {
         private String firstImageUrl;
 
         // 등록 날짜
-        private String createdtime;
+        private String createdTime;
 
         // 수정 날짜
-        private String modifiedtime;
+        private String modifiedTime;
 
         // 유명 시설 기준 거리 및 관광지 한줄 평
         private String featureNm;

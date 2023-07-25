@@ -2,38 +2,44 @@ package com.project.chamong.article.controller;
 
 import com.project.chamong.article.dto.CommentDto;
 import com.project.chamong.article.service.CommentService;
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentService commentService;
-
-    // 댓글 목록 조회
-    @GetMapping("/comments")
-    public ResponseEntity<List<CommentDto.Response>> getComments(@RequestParam("articleId") long articleId) {
-        return ResponseEntity.ok(commentService.getCommentsByArticleId(articleId));
-    }
-
+    
     // 댓글 생성
-    @PostMapping("/comments")
-    public ResponseEntity<CommentDto.Response> createComment(@RequestBody CommentDto.Post postDto){
-        return ResponseEntity.ok(commentService.createComment(postDto));
+    @PostMapping("/articles/{articleId}/comments")
+    public ResponseEntity<CommentDto.Response> createComment(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
+                                                             @PathVariable Long articleId,
+                                                             @RequestBody CommentDto.Post postDto){
+        
+        CommentDto.Response response = commentService.createComment(authorizedMemberDto,articleId, postDto);
+        return ResponseEntity.ok(response);
     }
-
+    
     // 댓글 수정
-    @PatchMapping("/comments/{id}")
-    public ResponseEntity<CommentDto.Response> updateComment(@PathVariable Long id, @RequestBody CommentDto.Patch patchDto){
-        return ResponseEntity.ok(commentService.updateComment(id, patchDto));
+    @PatchMapping("/articles/{articleId}/comments/{id}")
+    public ResponseEntity<CommentDto.Response> updateComment(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
+                                                             @PathVariable Long articleId,
+                                                             @PathVariable Long id,
+                                                             @RequestBody CommentDto.Patch patchDto){
+        
+        return ResponseEntity.ok(commentService.updateComment(authorizedMemberDto,articleId, id, patchDto));
     }
-    // 댁글 삭제
-    @DeleteMapping("/comments/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id){
-        commentService.deleteComment(id);
+    
+    // 댓글 삭제
+    @DeleteMapping("/articles/{articleId}/comments/{id}")
+    public ResponseEntity<Void> deleteComment(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
+                                              @PathVariable Long articleId,
+                                              @PathVariable Long id){
+        
+        commentService.deleteComment(authorizedMemberDto,articleId,id);
         return ResponseEntity.noContent().build();
     }
 }

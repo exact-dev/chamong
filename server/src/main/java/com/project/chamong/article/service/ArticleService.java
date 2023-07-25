@@ -2,19 +2,23 @@ package com.project.chamong.article.service;
 
 import com.project.chamong.article.dto.ArticleDto;
 import com.project.chamong.article.entity.Article;
-import com.project.chamong.article.entity.ArticleLike;
-import com.project.chamong.article.entity.Comment;
 import com.project.chamong.article.mapper.ArticleMapper;
-import com.project.chamong.article.repository.ArticleLikeRepository;
 import com.project.chamong.article.repository.ArticleRepository;
-import com.project.chamong.article.repository.CommentRepository;
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
+import com.project.chamong.exception.BusinessLogicException;
+import com.project.chamong.exception.ExceptionCode;
 import com.project.chamong.member.entity.Member;
 import com.project.chamong.member.repository.MemberRepository;
+import com.project.chamong.member.service.MemberService;
+import com.project.chamong.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,135 +26,114 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
-    private final ArticleLikeRepository articleLikeRepository;
-    private final CommentRepository commentRepository;
     private final ArticleMapper articleMapper;
     private final MemberRepository memberRepository;
-
-//    public List<ArticleDto.Response> getArticles(String keyword) {
-//        return StringUtils.isEmpty(keyword)
-//                ? articleRepository.findAll().stream().map(articleMapper::articleResponse).collect(Collectors.toList())
-//                : articleRepository.findByTitleContaining(keyword).stream().map(articleMapper::articleResponse).collect(Collectors.toList())
-//                .stream().map(article -> {
-//                    Member member = memberRepository.findById(article.getMemberId())
-//                            .orElseThrow(() -> new IllegalArgumentException("Member not found ID: " + article.getMemberId()));
-//                    article.setNickName(member.getNickname());
-//                    article.setProfileImg(member.getProfileImg());
-//                    article.setOilInfo(member.getOilInfo());
-//                    return article;
-//                }).collect(Collectors.toList());
-//    }
-
-    public List<ArticleDto.Response> getArticles(String keyword) {
-        List<ArticleDto.Response> articleResponses = StringUtils.isEmpty(keyword)
-                ? articleRepository.findAll().stream().map(articleMapper::articleResponse).collect(Collectors.toList())
-                : articleRepository.findByTitleContaining(keyword).stream().map(articleMapper::articleResponse).collect(Collectors.toList());
-
-        for (ArticleDto.Response articleResponse : articleResponses) {
-            Member member = memberRepository.findById(articleResponse.getMember().getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Member not found ID: " + articleResponse.getMember().getId()));
-            articleResponse.setNickName(member.getNickname());
-            articleResponse.setProfileImg(member.getProfileImg());
-            articleResponse.setOilInfo(member.getOilInfo());
-        }
-
-        return articleResponses;
+    private final MemberService memberService;
+    private final S3Service s3Service;
+    private String dirName = "article_image/";
+    
+    // 게시글 전체 조회
+    @Transactional
+    public List<ArticleDto.Response> getArticles(Long lastArticleId, String keyword, Pageable pageable) {
+        List<Article> articles = StringUtils.isEmpty(keyword)
+          ? articleRepository.findByIdGreaterThan(lastArticleId, pageable)
+          : articleRepository.findByTitleContainingAndIdGreaterThan(keyword, lastArticleId,pageable);
+        
+        List<ArticleDto.Response> articleResponsePage = articles.stream()
+          .map(articleMapper::articleResponse).collect(Collectors.toList());
+        
+        return articleResponsePage;
     }
-
-
-    public ArticleDto.Response getArticle(Long id) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found ID: " + id));
-//        Member member = memberRepository.findById(article.getMember().getId())
-//                .orElseThrow(() -> new IllegalArgumentException("Member not found ID: " + article.getMemberId()));
-        Member member = article.getMember();
-        increaseViewCnt(id);
-        ArticleDto.Response response = articleMapper.articleResponse(article);
-        response.setNickName(member.getNickname());
-        response.setProfileImg(member.getProfileImg());
-        response.setOilInfo(member.getOilInfo());
+    
+    
+    // 상세페이지 - 게시글과 댓글 조회
+    @Transactional
+    public ArticleDto.Response getArticle(Long id, AuthorizedMemberDto authorizedMemberDto) {
+        Member findMember = null;
+        
+        Article article = articleRepository.findWithCommentsById(id)
+          .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND));
+        
+        if(authorizedMemberDto != null){
+            findMember = memberService.findById(authorizedMemberDto.getId());
+        }
+        
+        increaseViewCnt(article);
+        
+        //댓글 createdAt 기준으로 내림차순 정렬
+        ArticleDto.Response response = articleMapper.articleResponse(article, findMember);
+        
         return response;
     }
-
+    
+    // 인기글 조회 (5개씩, 1순위: 좋아요 수, 2순위: 조회수)
+    public List<ArticleDto.Response> getPopularArticlesForWeb() {
+        List<Article> popularArticles = articleRepository.findAll(PageRequest.of(0, 5)).getContent();
+        
+        return popularArticles.stream().map(articleMapper::articleResponse).collect(Collectors.toList());
+    }
+    
+    // app 화면에서는 3개씩 조회
+    public List<ArticleDto.Response> getPopularArticlesForApp() {
+        List<Article> popularArticles = articleRepository.findAll(PageRequest.of(0, 3)).getContent();
+        
+        return popularArticles.stream().map(articleMapper::articleResponse).collect(Collectors.toList());
+    }
+    
+    
     // Article 생성
-    public ArticleDto.Response createArticle(ArticleDto.Post postDto) {
-        Member member = memberRepository.findById(postDto.getMemberId())
-                .orElseThrow(()-> new IllegalArgumentException("Member not found with ID: "+ postDto.getMemberId()));
-        Article article = Article.createArticle(postDto,member);
-        article.setMember(member);
-//        article.setMember(memberRepository.findById(postDto.getMemberId())
-//                .orElseThrow(()-> new IllegalArgumentException("Member not found ID: "+ postDto.getMemberId())));
+    public ArticleDto.Response createArticle(AuthorizedMemberDto authorizedMemberDto, ArticleDto.Post postDto, MultipartFile articleImg) {
+        Member member = memberRepository.findById(authorizedMemberDto.getId())
+          .orElseThrow(() -> new IllegalArgumentException("Member not found with ID: " + authorizedMemberDto.getId()));
+        
+        
+        if(!articleImg.isEmpty()){
+            postDto.setArticleImg(s3Service.uploadFile(articleImg, dirName));
+        }
+        
+        Article article = Article.createArticle(postDto, member);
+        
         return articleMapper.articleResponse(articleRepository.save(article));
     }
-
-    public ArticleDto.Response updateArticle(Long id, ArticleDto.Patch patchDto) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + id));
-
+    
+    // Article 수정
+    @Transactional
+    public ArticleDto.Response updateArticle(AuthorizedMemberDto authorizedMemberDto, Long id, ArticleDto.Patch patchDto, MultipartFile articleImg) {
+        Article article = articleRepository.findWithCommentsById(id)
+          .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + id));
+        
+        if (!article.isWriter(memberService.findById(authorizedMemberDto.getId()))) {
+            throw new IllegalStateException("Only the author of the article can delete it.");
+        }
+        if(articleImg != null){
+            patchDto.setArticleImg(s3Service.uploadFile(articleImg, dirName));
+        }
+        
         article.update(patchDto);
+        
         return articleMapper.articleResponse(article);
     }
-
+    
+    @Transactional
     // Article 삭제
-    public void deleteArticle(Long id) {
+    public void deleteArticle(AuthorizedMemberDto authorizedMemberDto, Long id) {
         Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + id));
-
-        // 댓글 삭제
-        for (Comment comment : article.getComments()) {
-            commentRepository.delete(comment);
+          .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + id));
+        
+        Member member = memberRepository.findById(authorizedMemberDto.getId())
+          .orElseThrow(() -> new IllegalArgumentException("Member not found with ID: " + authorizedMemberDto.getId()));
+        
+        if (!article.isWriter(member)) {
+            throw new IllegalStateException("Only the author of the article can delete it.");
         }
-
+        
+        // 게시글 삭제
         articleRepository.delete(article);
     }
-
-    // 조회수
-    public void increaseViewCnt(Long id) {
-        Article article = articleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found ID:" + id));
+    
+    // 조회수 증가
+    public void increaseViewCnt(Article article) {
         article.setViewCnt(article.getViewCnt() + 1);
     }
 
-    @Transactional
-    public void likeArticle(Long memberId, Long articleId) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found ID:" + articleId));
-        ArticleLike articleLike = new ArticleLike();
-        articleLike.setArticle(article);
-        articleLike.setMemberId(memberId);
-        articleLikeRepository.save(articleLike);
-        article.increaseLikeCnt();
-    }
-
-    @Transactional
-    public void unlikeArticle(Long memberId, Long articleId) {
-        ArticleLike articleLike = articleLikeRepository.findByMemberIdAndArticleId(memberId, articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article Like not found with articleId: " + articleId + " and memberId: " + memberId));
-        articleLikeRepository.delete(articleLike);
-
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + articleId));
-        article.decreaseLikeCnt();
-    }
-
-    // 조회수 반환
-    public int getArticleViewCnt(Long articleId) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + articleId));
-        return article.getViewCnt();
-    }
-
-    // 좋아요 수 반환
-    public int getArticleLikeCnt(Long articleId) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + articleId));
-        return article.getLikeCnt();
-    }
-
-    // 댓글 수 반환
-    public int getCommentCnt(Long articleId) {
-        Article article = articleRepository.findById(articleId)
-                .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + articleId));
-        return article.getComments().size();
-    }
 }

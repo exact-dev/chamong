@@ -1,21 +1,25 @@
 package com.project.chamong.camping.controller;
 
+import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.camping.dto.CampingApiDto;
+import com.project.chamong.camping.dto.ContentResponseDto;
 import com.project.chamong.camping.entity.Content;
 import com.project.chamong.camping.mapper.CampingApiMapper;
 import com.project.chamong.camping.service.CampingApiService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.lang.Nullable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.constraints.Positive;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -26,7 +30,7 @@ import java.util.List;
  * Description : Main Controller
  * <p>
  * keywordId(키워드 클릭시 단발적인 이동) = 1(오션뷰), 2(피톤치드), 3(애견동반), 4(운동), 5(물놀이 시간), 6(단풍), 7(봄꽃여행), 8(일몰명소), 9(인기)
- * areaid = 1(서울), 2(대구/경북), 3(강원), 4(경기/인천), 5(광주/전라), 6(대전/충청), 7(제주), 8(부산/경남)
+ * areaId = 1(서울), 2(대구/경북), 3(강원), 4(경기/인천), 5(광주/전라), 6(대전/충청), 7(제주), 8(부산/경남)
  * themeId : 1(화장실), 2(산), 3(강), 4(섬), 5(숲), 6(호수), 7(해변), 8(와이파이), 9(전기), 10(운동시설), 11(물놀이), 12(마트), 13(편의점), 14(체험활동),
  * 15(낚시), 16(반려동물), 17(운영중)
  */
@@ -51,7 +55,7 @@ public class CampingController {
     }
 
     // 고캠핑 API 저장
-    @PostMapping("/camping")
+    @PostMapping("/content")
     public String postCampingApi() {
         URI uri = UriComponentsBuilder
                 .newInstance()
@@ -85,8 +89,10 @@ public class CampingController {
                 mapX = 0.0;
                 mapY = 0.0;
             } else {
-                mapX = (double) item.get("mapX");
-                mapY = (double) item.get("mapY");
+                BigDecimal bdMapX = (BigDecimal) item.get("mapX");
+                BigDecimal bdMapY = (BigDecimal) item.get("mapY");
+                mapX = bdMapX.doubleValue();
+                mapY = bdMapY.doubleValue();
             }
             String addr1 = String.valueOf(item.get("addr1"));
             String tel = String.valueOf(item.get("tel"));
@@ -145,42 +151,42 @@ public class CampingController {
 
     // 캠핑장 키워드 검색
     @GetMapping("/search/keyword/{keyword-id}")
-    public ResponseEntity searchKeyword(
-            @RequestParam("page") int page,
-            @PathVariable("keyword-id") @Positive int keywordId) {
-        Page<Content> pageContent = campingApiService.findKeyword(page, keywordId);
-        List<Content> content = pageContent.getContent();
-        return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
+    public ResponseEntity searchKeyword(@RequestParam(defaultValue = "0") Long lastContentId,
+                                        @PathVariable("keyword-id") @Positive int keywordId,
+                                        @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+        List<ContentResponseDto> contentResponseDtos = campingApiService.findKeyword(lastContentId, keywordId, authorizedMemberDto);
+        
+        return new ResponseEntity<>(contentResponseDtos, HttpStatus.OK);
     }
 
     // 캠핑장 검색
     @GetMapping("/search/{thema-id}/{place-id}")
-    public ResponseEntity searchCamping(
-            @PathVariable("thema-id") @Positive int themaId,
-            @PathVariable("place-id") @Positive int placeId,
-            @RequestParam("page") int page,
-            @RequestParam(value = "keyword", required = false) String keyword
-    ) {
-        Page<Content> pageContent = campingApiService.findCamping(page - 1, keyword, themaId, placeId);
-        List<Content> content = pageContent.getContent();
-
-        return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
+    public ResponseEntity searchCamping(@PathVariable("thema-id") @Positive int themaId,
+                                        @PathVariable("place-id") @Positive int placeId,
+                                        @RequestParam(defaultValue = "0") Long lastContentId,
+                                        @RequestParam(required = false) String keyword,
+                                        @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+        List<ContentResponseDto> contentResponseDtos =
+          campingApiService.findCamping(lastContentId, keyword, themaId, placeId, authorizedMemberDto);
+        
+        return new ResponseEntity<>(contentResponseDtos, HttpStatus.OK);
     }
 
     // 캠핑장 메인 페이지
     @GetMapping
-    public ResponseEntity getContents(int page) {
-        Page<Content> pageContent = campingApiService.findContents(page - 1);
-        List<Content> content = pageContent.getContent();
-        return new ResponseEntity<>(mapper.campingReponses(content), HttpStatus.OK);
+    public ResponseEntity<?> getContents(@RequestParam(defaultValue = "0") Long lastContentId,
+                                         @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+        List<ContentResponseDto> contents = campingApiService.findContents(lastContentId, authorizedMemberDto);
+        
+        return new ResponseEntity<>(contents, HttpStatus.OK);
     }
-
 
     // 캠핑장 상세 페이지
     @GetMapping("/{content-id}")
-    public ResponseEntity getContent(
-            @PathVariable("content-id") @Positive long contentId) {
-        Content content = campingApiService.findContent(contentId);
-        return new ResponseEntity<>(mapper.campingReponse(content), HttpStatus.OK);
+    public ResponseEntity getContent(@PathVariable("content-id") @Positive long contentId,
+                                     @AuthenticationPrincipal @Nullable AuthorizedMemberDto authorizedMemberDto) {
+        ContentResponseDto content = campingApiService.findContentResponse(contentId, authorizedMemberDto);
+        
+        return new ResponseEntity<>(content, HttpStatus.OK);
     }
 }

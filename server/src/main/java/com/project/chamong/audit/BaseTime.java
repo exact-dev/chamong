@@ -1,21 +1,17 @@
 package com.project.chamong.audit;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Auditable {
+public abstract class BaseTime {
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
@@ -23,5 +19,14 @@ public abstract class Auditable {
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    private LocalDateTime updatedat;
+    private LocalDateTime updatedAt;
+    
+    public void test(int a, int b){
+    
+    }
+    
+    public void test(int a){
+        
+    }
+    
 }

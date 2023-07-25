@@ -1,13 +1,8 @@
 package com.project.chamong.article.mapper;
 
-import com.project.chamong.article.dto.ArticleLikeDto;
-import com.project.chamong.article.entity.ArticleLike;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-import java.util.List;
-
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ArticleLikeMapper {
-    ArticleLike articleLikePostToarticleLike(ArticleLikeDto.Post postDto);
-    List<ArticleLikeDto> toDtoList(List<ArticleLike> articleLikes);
 }
