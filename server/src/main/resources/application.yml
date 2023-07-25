@@ -62,11 +62,4 @@ admin:
   email: admin@gmail.com
 
 
-aws:
-  access-key: AKIAUJ5FM6BJV7YUTZEU
-  secret-key: 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
-  region: ap-northeast-2
-  s3:
-    bucket: chamongbucket
-
 
