@@ -4,6 +4,8 @@ import com.project.chamong.audit.BaseTime;
 import com.project.chamong.member.entity.Member;
 import com.project.chamong.place.dto.MyPlaceDto;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,8 +25,7 @@ public class MyPlace extends BaseTime {
     // 설명
     private String memo;
     
-    @Column(name = "place_img")
-    String placeImg;
+    private String placeImg;
     
     // 키워드
     @ElementCollection(fetch = FetchType.LAZY)
@@ -41,12 +42,12 @@ public class MyPlace extends BaseTime {
     private Double mapY;
     
     // 공유 상태
-    @Column(name = "is_shared")
     private Boolean isShared;
 
     // 멤버 고유 키
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
     
     public void setMember(Member member){

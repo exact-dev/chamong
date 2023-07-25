@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class DeduplicationUtils {
-  
   public static <T> List<T> removeDuplication(final List<T> list, Function<? super T,?> key){
     return list.stream().filter(removeDuplication(key)).collect(Collectors.toList());
   }
@@ -17,6 +16,5 @@ public class DeduplicationUtils {
     final Set<Object> set = ConcurrentHashMap.newKeySet();
     return predicate -> set.add(key.apply(predicate));
   }
-  
   
 }

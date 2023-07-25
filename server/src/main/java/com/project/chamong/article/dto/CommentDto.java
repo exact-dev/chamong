@@ -1,10 +1,10 @@
 package com.project.chamong.article.dto;
 
-import com.project.chamong.article.entity.Comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,8 +13,8 @@ public class CommentDto {
     @Getter
     @Setter
     public static class Post {
+        @NotEmpty
         private String content;
-        
     }
     @Getter
     @Setter
@@ -33,6 +33,7 @@ public class CommentDto {
     @Getter
     @Setter
     public static class Patch{
+        @NotEmpty
         private String content;
         
     }

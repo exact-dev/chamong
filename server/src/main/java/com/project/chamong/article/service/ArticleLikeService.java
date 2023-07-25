@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,14 +22,12 @@ public class ArticleLikeService {
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
     
-    @Transactional(readOnly = false)
+    @Transactional
     public void likeArticle(AuthorizedMemberDto authorizedMemberDto, Long articleId) {
         Article article = articleRepository.findById(articleId)
           .orElseThrow(() -> new IllegalArgumentException("Article not found ID:" + articleId));
         
-        var authorizedMemberArticleLike = article.getArticleLikes().stream()
-          .filter(articleLike -> articleLike.getMember().getId() == authorizedMemberDto.getId())
-          .findAny();
+        var authorizedMemberArticleLike = verifyArticleLikeExists(article.getArticleLikes(), authorizedMemberDto.getId());
         
         if (authorizedMemberArticleLike.isEmpty()) {
             article.increaseLikeCnt();
@@ -43,19 +43,22 @@ public class ArticleLikeService {
     }
     
     
-    @Transactional(readOnly = false)
+    @Transactional
     public void unlikeArticle(AuthorizedMemberDto authorizedMemberDto, Long articleId) {
         Article article = articleRepository.findById(articleId)
           .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + articleId));
         
-        var authorizedMemberArticleLike = article.getArticleLikes().stream()
-          .filter(articleLike -> articleLike.getMember().getId() == authorizedMemberDto.getId())
-          .findAny();
+        var authorizedMemberArticleLike = verifyArticleLikeExists(article.getArticleLikes(), authorizedMemberDto.getId());
+        
         if (authorizedMemberArticleLike.isPresent()) {
             article.decreaseLikeCnt();
             article.getArticleLikes().removeIf(articleLike -> articleLike.getMember().getId() == authorizedMemberDto.getId());
         }
     }
     
-    
+    public Optional<ArticleLike> verifyArticleLikeExists(List<ArticleLike> articleLikes, Long id){
+        return articleLikes.stream()
+          .filter(articleLike -> articleLike.getMember().getId() == id)
+          .findAny();
+    }
 }

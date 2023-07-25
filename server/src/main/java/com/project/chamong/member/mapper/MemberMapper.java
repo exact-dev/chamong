@@ -43,9 +43,13 @@ public interface MemberMapper {
     List<Article> commentedArticles = member.getComments().stream()
       .map(comment -> comment.getArticle())
       .collect(Collectors.toList());
+    
+    //member 가 하나의 게시글에 남긴 댓글이 여러개일 경우 게시글이 중복되므로 중복을 제거합니다.
     List<Article> distinctCommentedArticles = DeduplicationUtils.removeDuplication(commentedArticles, Article::getId);
-  
-    List<Article> likedArticles = member.getArticleLikes().stream()
+    
+    List<ArticleLike> memberArticleLikes = member.getArticleLikes();
+    
+    List<Article> likedArticles = memberArticleLikes.stream()
       .map(articleLike -> articleLike.getArticle())
       .collect(Collectors.toList());
     
@@ -54,9 +58,9 @@ public interface MemberMapper {
       .memberInfo(memberToMemberResponseDto(member))
       .myPlaceInfos(myPlacesToMyPlaceDtos(member.getMyPlaces()))
       .visitedPlaceInfos(visitedPlacesToVisitedPlaceResponseDtos(member.getVisitedPlaces()))
-      .writtenArticleInfos(articlesToArticleResponseDtos(member.getArticles(), member.getArticleLikes()))
-      .commentedArticleInfos(articlesToArticleResponseDtos(distinctCommentedArticles, member.getArticleLikes()))
-      .likedArticleInfos(articlesToArticleResponseDtos(likedArticles, member.getArticleLikes()))
+      .writtenArticleInfos(articlesToArticleResponseDtos(member.getArticles(), memberArticleLikes))
+      .commentedArticleInfos(articlesToArticleResponseDtos(distinctCommentedArticles, memberArticleLikes))
+      .likedArticleInfos(articlesToArticleResponseDtos(likedArticles, memberArticleLikes))
       .build();
   }
   
@@ -96,8 +100,9 @@ public interface MemberMapper {
   }
   
   default List<ArticleDto.Response> articlesToArticleResponseDtos(List<Article> articles, List<ArticleLike> memberArticleLikes){
-  
-    return articles.stream()
+    System.out.println("articlesToArticleResponseDtos 호출됨");
+    
+    List<ArticleDto.Response> articleResponses = articles.stream()
       .map(article -> ArticleDto.Response.builder()
         .id(article.getId())
         .title(article.getTitle())
@@ -106,7 +111,7 @@ public interface MemberMapper {
         .profileImg(article.getMember().getProfileImg())
         .carName(article.getMember().getCarName())
         .articleImg(article.getArticleImg())
-        .isLiked(hasMemberArticleLike(article, memberArticleLikes))
+        .isLiked(hasMemberArticleLike(article.getArticleLikes(), memberArticleLikes))
         .memberId(article.getMember().getId())
         .viewCnt(article.getViewCnt())
         .likeCnt(article.getLikeCnt())
@@ -116,17 +121,20 @@ public interface MemberMapper {
         .updatedAt(article.getUpdatedAt())
         .build())
       .collect(Collectors.toList());
+    
+    return articleResponses;
   }
   
-  default Boolean hasMemberArticleLike(Article article, List<ArticleLike> memberArticleLikes){
+  default Boolean hasMemberArticleLike(List<ArticleLike> articleArticleLikes, List<ArticleLike> memberArticleLikes){
+    
     return memberArticleLikes
       .stream()
-      .anyMatch(memberArticleLike -> article.getArticleLikes().stream()
+      .anyMatch(memberArticleLike -> articleArticleLikes.stream()
         .anyMatch(articleArticleLike -> memberArticleLike.getId() == articleArticleLike.getId()));
   }
   
   default List<CommentDto.Response> commentsToCommentResponseDtos(List<Comment> comments){
-    return comments.stream()
+    List<CommentDto.Response> commentResponseDtos = comments.stream()
       .map(comment ->
         CommentDto.Response.builder()
           .id(comment.getId())
@@ -139,5 +147,7 @@ public interface MemberMapper {
           .updatedAt(comment.getUpdatedAt())
           .build()
       ).collect(Collectors.toList());
+    
+    return commentResponseDtos;
   }
 }

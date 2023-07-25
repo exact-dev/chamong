@@ -24,7 +24,7 @@ public interface VisitedPlaceMapper {
     
     default List<VisitedPlaceDto.Response> visitedPlacesToResponseDtos(List<VisitedPlace> visitedPlaces){
         return visitedPlaces.stream()
-          .map(visitedPlace -> visitedPlaceToResponseDto(visitedPlace))
+          .map(this::visitedPlaceToResponseDto)
           .collect(Collectors.toList());
     }
 }

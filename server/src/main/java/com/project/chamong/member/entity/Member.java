@@ -1,6 +1,5 @@
 package com.project.chamong.member.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.chamong.article.entity.Article;
 import com.project.chamong.article.entity.ArticleLike;
 import com.project.chamong.article.entity.Comment;
@@ -16,28 +15,26 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseTime {
   
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-
+  
   private String email;
-
+  
   private String password;
-
+  
   private String nickname;
 
-  @Column(name = "profile_img")
   private String profileImg;
 
   private String about;
-
-  @Column(name = "car_name")
+  
   private String carName;
-
-  @Column(name = "oil_info")
+  
   private String oilInfo;
   
   @ElementCollection(fetch = FetchType.EAGER)
@@ -45,21 +42,27 @@ public class Member extends BaseTime {
   @Column(name = "role")
   private List<String> roles = new ArrayList<>();
   
-  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-  private List<Article> articles;
+  @OneToMany(mappedBy = "member")
+  private List<Article> articles = new ArrayList<>();
 
-  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-  private List<VisitedPlace> visitedPlaces;
+  @OneToMany(mappedBy = "member")
+  private List<VisitedPlace> visitedPlaces = new ArrayList<>();
 
-  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-  private List<MyPlace> myPlaces;
+  @OneToMany(mappedBy = "member")
+  private List<MyPlace> myPlaces = new ArrayList<>();
+
+  @OneToMany(mappedBy = "member")
+  private List<Comment> comments = new ArrayList<>();
+
+  @OneToMany(mappedBy = "member")
+  private List<ArticleLike> articleLikes = new ArrayList<>();
   
-  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-  private List<Comment> comments;
-  
-  @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-  private List<ArticleLike> articleLikes;
-  
+  public void addMyPlace(MyPlace myPlace){
+    if(this.myPlaces.contains(myPlace)){
+      this.myPlaces.add(myPlace);
+    }
+    
+  }
   @Builder
   public Member(String email, String password, String nickname, String profileImg, String about, String carName, String oilInfo, List<String> roles) {
     this.email = email;

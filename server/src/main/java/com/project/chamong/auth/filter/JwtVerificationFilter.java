@@ -31,6 +31,7 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
   private final JwtProvider jwtProvider;
   private final TokenRedisRepository redisRepository;
   private final MemberRepository memberRepository;
+  private final CustomAuthorityUtils customAuthorityUtils;
   private final String HEADER_PREFIX = "Bearer ";
   
   @Override
@@ -60,8 +61,8 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
   protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
     String accessToken = request.getHeader("Authorization");
     String refreshToken = request.getHeader("Refresh");
-    
-    return !(accessToken != null && accessToken.startsWith(HEADER_PREFIX)) && !(refreshToken != null);
+
+    return refreshToken == null && !(accessToken != null && accessToken.startsWith(HEADER_PREFIX));
   }
   
   public Claims verifyJws(HttpServletRequest request, HttpServletResponse response) {
@@ -85,17 +86,21 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
       throw new TokenException(AuthenticationExceptionCode.MISMATCHED_TOKEN);
     }
     
-    Member member = memberRepository.findByEmail(claims.getSubject()).orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    Member member = memberRepository.findByEmail(claims.getSubject())
+      .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
+    
     String newAccessToken = jwtProvider.generateAccessToken(member);
     response.setHeader("Authorization", HEADER_PREFIX + newAccessToken);
     return jwtProvider.parseClaims(newAccessToken);
-    
   }
   
-  public void setAuthenticationToContext(Claims claims){
+  public void setAuthenticationToContext(Claims claims) {
     Member member = memberRepository.findByEmail(claims.getSubject()).orElseThrow();
+    
     AuthorizedMemberDto authorizedMemberDto = AuthorizedMemberDto.builder().id(member.getId()).email(member.getEmail()).build();
-    List<GrantedAuthority> authorities = CustomAuthorityUtils.createAuthority(member.getRoles());
+    
+    List<GrantedAuthority> authorities = customAuthorityUtils.createAuthority(member.getRoles());
+    
     UsernamePasswordAuthenticationToken authenticatedToken =
       UsernamePasswordAuthenticationToken.authenticated(authorizedMemberDto, null, authorities);
   

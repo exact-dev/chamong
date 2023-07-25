@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 
@@ -19,6 +18,7 @@ import java.util.Collection;
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
   private final MemberService memberService;
+  private final CustomAuthorityUtils customAuthorityUtils;
   
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -28,12 +28,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   }
   @Getter
   @AllArgsConstructor
-  public class UserDetailsImpl implements UserDetails {
+  public final class UserDetailsImpl implements UserDetails {
     private Member member;
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-      return CustomAuthorityUtils.createAuthority(member.getRoles());
+      return customAuthorityUtils.createAuthority(member.getRoles());
     }
   
     @Override

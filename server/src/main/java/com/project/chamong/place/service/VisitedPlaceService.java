@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,13 +27,13 @@ public class VisitedPlaceService {
     private final VisitedPlaceMapper mapper;
 
     public List< VisitedPlaceDto.Response> findVisitedPlaces(){
-        List<VisitedPlace> visitedPlaces = visitedPlaceRepository.findAll();
+        List<VisitedPlace> visitedPlaces = visitedPlaceRepository.findWithContentAll();
         
         return mapper.visitedPlacesToResponseDtos(visitedPlaces);
     }
     
     public VisitedPlaceDto.Response saveVisitedPlace(Long contentId, AuthorizedMemberDto authorizedMemberDto){
-        Member findMember = memberService.findByEmail(authorizedMemberDto.getEmail());
+        Member findMember = memberService.findById(authorizedMemberDto.getId());
     
         Content findContent = verifyVisitedPlaceExist(findMember, contentId);
     
@@ -52,22 +51,19 @@ public class VisitedPlaceService {
     public void deleteVisitedPlace(Long id, AuthorizedMemberDto authorizedMemberDto){
         VisitedPlace findVisitedPlace = verifyVisitedPlaceExist(id);
         
-        if(findVisitedPlace.getMember().getId() != authorizedMemberDto.getId()){
+        if(findVisitedPlace.getMember().getId().equals(authorizedMemberDto.getId())){
             throw new BusinessLogicException(ExceptionCode.VISITED_PLACE_DELETE_NO_PERMISSION);
         }
         
         visitedPlaceRepository.deleteById(id);
     }
-    
     public Content verifyVisitedPlaceExist(Member member, Long contentId){
+        VisitedPlace findVisitedPlace = visitedPlaceRepository.findByMemberIdAndContentId(member.getId(), contentId);
         
-        boolean isContained = member.getVisitedPlaces().stream()
-          .anyMatch(visitedPlace -> visitedPlace.getContent().getContentId() == contentId);
-        
-        if(isContained){
+        if(findVisitedPlace != null){
             throw new BusinessLogicException(ExceptionCode.VISITED_PLACE_EXISTS);
         }
-    
+        
         return campingApiService.findContent(contentId);
     }
     

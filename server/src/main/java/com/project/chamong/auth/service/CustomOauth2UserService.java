@@ -1,20 +1,12 @@
 package com.project.chamong.auth.service;
 
-import com.project.chamong.auth.utils.CustomAuthorityUtils;
-import com.project.chamong.exception.BusinessLogicException;
-import com.project.chamong.member.dto.MemberDto;
-import com.project.chamong.member.entity.Member;
 import com.project.chamong.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 //@Service

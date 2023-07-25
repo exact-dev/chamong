@@ -2,8 +2,6 @@ package com.project.chamong.place.controller;
 
 import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.place.dto.VisitedPlaceDto;
-import com.project.chamong.place.entity.VisitedPlace;
-import com.project.chamong.place.mapper.VisitedPlaceMapper;
 import com.project.chamong.place.service.VisitedPlaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,15 +29,15 @@ public class VisitedPlaceController {
     
     @PostMapping("/{contentId}")
     public ResponseEntity<?> postVisitedPlace(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
-                                              @PathVariable("contentId") @Positive Long contentId){
+                                              @PathVariable @Positive Long contentId){
         VisitedPlaceDto.Response response = visitedPlaceService.saveVisitedPlace(contentId, authorizedMemberDto);
     
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{visitedPlaceId}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
-                                        @PathVariable("visitedPlaceId") @Positive Long id) {
+                                        @PathVariable @Positive Long id) {
         visitedPlaceService.deleteVisitedPlace(id, authorizedMemberDto);
         String message = "방문한 장소가 삭제 되었습니다.";
         

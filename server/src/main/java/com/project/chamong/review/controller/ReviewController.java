@@ -12,7 +12,6 @@ import com.project.chamong.review.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -43,15 +42,17 @@ public class ReviewController {
     @PostMapping("/{content-id}")
     public ResponseEntity postReview(@PathVariable("content-id") long contentId,
                                      @AuthenticationPrincipal AuthorizedMemberDto authorizedMember,
-                                     @RequestBody ReviewDto.Post requestBody) {
+                                     @RequestBody ReviewDto.Post postDto) {
         Content content = campingApiService.findContent(contentId);
-        Review review = mapper.reviewPostDtoToReview(requestBody);
-        Member findMember = memberService.findByEmail(authorizedMember.getEmail());
+        Review review = mapper.reviewPostDtoToReview(postDto);
+        Member findMember = memberService.findById(authorizedMember.getId());
         review.setMember(findMember);
         review.setContents(content);
         Review createdReview = reviewService.createReview(review);
-
-        return new ResponseEntity<>(mapper.reviewResponse(createdReview), HttpStatus.CREATED);
+        
+        ReviewDto.Response response = mapper.reviewResponse(createdReview);
+        
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     // 리뷰 수정
@@ -60,8 +61,9 @@ public class ReviewController {
                                         @Valid @RequestBody ReviewDto.Patch requestBody){
 
         Review review = reviewService.updateReview(reviewId, mapper.reviewPatchDtoToReview(requestBody));
-
-        return new ResponseEntity<>(mapper.reviewResponse(review), HttpStatus.OK);
+        ReviewDto.Response response = mapper.reviewResponse(review);
+        
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

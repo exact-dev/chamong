@@ -2,11 +2,8 @@ package com.project.chamong.article.service;
 
 import com.project.chamong.article.dto.ArticleDto;
 import com.project.chamong.article.entity.Article;
-import com.project.chamong.article.entity.Comment;
 import com.project.chamong.article.mapper.ArticleMapper;
-import com.project.chamong.article.repository.ArticleLikeRepository;
 import com.project.chamong.article.repository.ArticleRepository;
-import com.project.chamong.article.repository.CommentRepository;
 import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.exception.BusinessLogicException;
 import com.project.chamong.exception.ExceptionCode;
@@ -16,16 +13,12 @@ import com.project.chamong.member.service.MemberService;
 import com.project.chamong.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ArticleService {
     private final ArticleRepository articleRepository;
-    private final CommentRepository commentRepository;
     private final ArticleMapper articleMapper;
     private final MemberRepository memberRepository;
     private final MemberService memberService;
@@ -41,25 +33,15 @@ public class ArticleService {
     private String dirName = "article_image/";
     
     // 게시글 전체 조회
-    // 게시글 전체 조회
     @Transactional
-    public Page<ArticleDto.Response> getArticles(String keyword, Pageable pageable) {
-        Page<Article> articlePage = StringUtils.isEmpty(keyword)
-          ? articleRepository.findAll(pageable)
-          : articleRepository.findByTitleContaining(keyword, pageable);
-    
-        Page<ArticleDto.Response> articleResponsePage = articlePage.map(articleMapper::articleResponse);
-    
-        for (ArticleDto.Response articleResponse : articleResponsePage.getContent()) {
-            Article article = articleRepository.findById(articleResponse.getId())
-              .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND));
-            Member member = article.getMember();
-            articleResponse.setNickname(member.getNickname());
-            articleResponse.setProfileImg(member.getProfileImg());
-            articleResponse.setCarName(member.getCarName());
+    public List<ArticleDto.Response> getArticles(Long lastArticleId, String keyword, Pageable pageable) {
+        List<Article> articles = StringUtils.isEmpty(keyword)
+          ? articleRepository.findByIdGreaterThan(lastArticleId, pageable)
+          : articleRepository.findByTitleContainingAndIdGreaterThan(keyword, lastArticleId,pageable);
         
-        }
-    
+        List<ArticleDto.Response> articleResponsePage = articles.stream()
+          .map(articleMapper::articleResponse).collect(Collectors.toList());
+        
         return articleResponsePage;
     }
     
@@ -68,34 +50,33 @@ public class ArticleService {
     @Transactional
     public ArticleDto.Response getArticle(Long id, AuthorizedMemberDto authorizedMemberDto) {
         Member findMember = null;
-        Article article = articleRepository.findById(id)
+        
+        Article article = articleRepository.findWithCommentsById(id)
           .orElseThrow(() -> new BusinessLogicException(ExceptionCode.ARTICLE_NOT_FOUND));
+        
         if(authorizedMemberDto != null){
-            findMember = memberService.findByEmail(authorizedMemberDto.getEmail());
+            findMember = memberService.findById(authorizedMemberDto.getId());
         }
         
-        increaseViewCnt(id);
+        increaseViewCnt(article);
         
         //댓글 createdAt 기준으로 내림차순 정렬
-        List<Comment> comments = article.getComments();
-        Collections.sort(comments, Comparator.comparing(Comment::getCreatedAt));
         ArticleDto.Response response = articleMapper.articleResponse(article, findMember);
-        response.setComments(articleMapper.commentsToCommentResponseDto(comments));
         
         return response;
     }
     
     // 인기글 조회 (5개씩, 1순위: 좋아요 수, 2순위: 조회수)
     public List<ArticleDto.Response> getPopularArticlesForWeb() {
-        List<Article> popularArticles = articleRepository.findAll(Sort.by(Sort.Direction.DESC, "likeCnt", "viewCnt"))
-          .stream().limit(5).collect(Collectors.toList());
+        List<Article> popularArticles = articleRepository.findAll(PageRequest.of(0, 5)).getContent();
+        
         return popularArticles.stream().map(articleMapper::articleResponse).collect(Collectors.toList());
     }
     
     // app 화면에서는 3개씩 조회
     public List<ArticleDto.Response> getPopularArticlesForApp() {
-        List<Article> popularArticles = articleRepository.findAll(Sort.by(Sort.Direction.DESC, "likeCnt", "viewCnt"))
-          .stream().limit(3).collect(Collectors.toList());
+        List<Article> popularArticles = articleRepository.findAll(PageRequest.of(0, 3)).getContent();
+        
         return popularArticles.stream().map(articleMapper::articleResponse).collect(Collectors.toList());
     }
     
@@ -116,21 +97,19 @@ public class ArticleService {
     }
     
     // Article 수정
+    @Transactional
     public ArticleDto.Response updateArticle(AuthorizedMemberDto authorizedMemberDto, Long id, ArticleDto.Patch patchDto, MultipartFile articleImg) {
-        Article article = articleRepository.findById(id)
+        Article article = articleRepository.findWithCommentsById(id)
           .orElseThrow(() -> new IllegalArgumentException("Article not found with ID: " + id));
         
-        if (!article.isWriter(memberService.findByEmail(authorizedMemberDto.getEmail()))) {
+        if (!article.isWriter(memberService.findById(authorizedMemberDto.getId()))) {
             throw new IllegalStateException("Only the author of the article can delete it.");
-            
         }
-        if(!articleImg.isEmpty()){
+        if(articleImg != null){
             patchDto.setArticleImg(s3Service.uploadFile(articleImg, dirName));
         }
         
-        
         article.update(patchDto);
-        articleRepository.save(article);
         
         return articleMapper.articleResponse(article);
     }
@@ -148,23 +127,12 @@ public class ArticleService {
             throw new IllegalStateException("Only the author of the article can delete it.");
         }
         
-        if (article.getMember().getId().equals(member)) {
-            throw new IllegalStateException("Only the author of the article can delete it.");
-        }
-        List<Comment> comments = article.getComments();
-        article.setComments(new ArrayList<>());
-        // article 삭제 전에 연관된 comments 컬렉션 비우기
-        comments.forEach(comment -> comment.setArticle(null));
-        commentRepository.deleteAll(comments);
-        
         // 게시글 삭제
         articleRepository.delete(article);
     }
     
     // 조회수 증가
-    public void increaseViewCnt(Long id) {
-        Article article = articleRepository.findById(id)
-          .orElseThrow(() -> new IllegalArgumentException("Article not found ID:" + id));
+    public void increaseViewCnt(Article article) {
         article.setViewCnt(article.getViewCnt() + 1);
     }
 

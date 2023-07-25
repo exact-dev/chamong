@@ -16,10 +16,10 @@ public interface MyPlaceMapper {
     @Mapping(target = "id", ignore = true)
     void myPlaceToMyPlace(MyPlace sourceMyplace, @MappingTarget MyPlace targetMyplace);
     
-    default List<MyPlaceDto.Response> myPlacesToMyPlaceResponse (List<MyPlace> myPlaces){
+    default List<MyPlaceDto.Response> myPlacesToMyPlaceResponses(List<MyPlace> myPlaces){
         return myPlaces.stream()
           .map(myPlace -> myPlaceToResponse(myPlace))
           .collect(Collectors.toList());
     }
-
+    
 }

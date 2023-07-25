@@ -6,12 +6,14 @@ import com.project.chamong.article.entity.Article;
 import com.project.chamong.article.entity.Comment;
 import com.project.chamong.member.entity.Member;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ArticleMapper {
     default ArticleDto.Response articleResponse(Article article, Member member) {
         Boolean isLiked = false;
@@ -61,24 +63,24 @@ public interface ArticleMapper {
     }
     
     default List<CommentDto.Response> commentsToCommentResponseDto(List<Comment> comments) {
-        return comments.stream()
+        
+        List<CommentDto.Response> responseDtos = comments.stream()
           .map(comment ->
             CommentDto.Response.builder()
               .id(comment.getId())
               .content(comment.getContent())
               .articleId(comment.getArticle().getId())
-              .memberId(Optional.ofNullable(comment.getMember()).map(Member::getId).orElse(null))
-              .nickname(Optional.ofNullable(comment.getMember()).map(Member::getNickname).orElse(null))
-              .profileImg(Optional.ofNullable(comment.getMember()).map(Member::getProfileImg).orElse(null))
               .memberId(comment.getMember().getId())
               .nickname(comment.getMember().getNickname())
               .profileImg(comment.getMember().getProfileImg())
               .createdAt(comment.getCreatedAt())
               .updatedAt(comment.getUpdatedAt())
               .build())
-          .peek(System.out::println) // log 확인
           .collect(Collectors.toList());
         
+        Collections.sort(responseDtos, Comparator.comparing(CommentDto.Response::getCreatedAt));
+        
+        return responseDtos;
     }
     
 }

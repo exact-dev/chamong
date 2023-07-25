@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URL;
 
 @Service
 public class S3Service {
@@ -40,6 +39,6 @@ public class S3Service {
     }
     
     public String getDefaultCampingImg(){
-        return amazonS3.getUrl(bucketName, "images/default_image/camping(default).jpg").toString();
+        return amazonS3.getUrl(bucketName, "images/default_image/content(default).jpg").toString();
     }
 }

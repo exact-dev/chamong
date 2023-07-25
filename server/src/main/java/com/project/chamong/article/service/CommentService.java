@@ -10,12 +10,8 @@ import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import com.project.chamong.member.entity.Member;
 import com.project.chamong.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

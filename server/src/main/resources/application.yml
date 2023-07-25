@@ -4,18 +4,21 @@ spring:
     url: jdbc:mysql://chamongdb.cxwpt4cf2wfk.ap-northeast-2.rds.amazonaws.com:3306/chamongdb?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: root
     password : 79647964
+#    url: jdbc:mysql://localhost:3306/testDB?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    username: root
+#    password: wls5177
+
   jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-#      naming:
-#        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
-#        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
       ddl-auto: none
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+        default_batch_fetch_size: 100
+#        validator:
+#          apply_to_ddl: false
+#    open-in-view: false
 
   redis:
     host: localhost
@@ -28,9 +31,7 @@ spring:
           google:
             client-id: 177455669845-2r2hiar8aoibtknbo7546ii7cav76hk0.apps.googleusercontent.com
             client-secret: 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
-            scope:
-              - email
-              - profile
+            scope: profile, email
 
 logging:
   level:
@@ -46,7 +47,6 @@ logging:
 #        coyote:
 #          http11: debug
 
-
 server:
   servlet:
     encoding:
@@ -61,5 +61,12 @@ jwt:
 admin:
   email: admin@gmail.com
 
+
+aws:
+  access-key: AKIAUJ5FM6BJV7YUTZEU
+  secret-key: 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
+  region: ap-northeast-2
+  s3:
+    bucket: chamongbucket
 
 

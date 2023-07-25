@@ -2,7 +2,6 @@ package com.project.chamong.review.service;
 
 import com.project.chamong.exception.BusinessLogicException;
 import com.project.chamong.exception.ExceptionCode;
-import com.project.chamong.review.dto.ReviewDto;
 import com.project.chamong.review.entity.Review;
 import com.project.chamong.review.mapper.ReviewMapper;
 import com.project.chamong.review.repository.ReviewRepository;

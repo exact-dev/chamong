@@ -5,7 +5,6 @@ import com.project.chamong.article.service.ArticleLikeService;
 import com.project.chamong.article.service.ArticleService;
 import com.project.chamong.auth.dto.AuthorizedMemberDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -37,20 +36,20 @@ public class ArticleController {
     
     // 전체 글 조회 - 15개씩 보여주기
     @GetMapping("/articles")
-    public ResponseEntity<Page<ArticleDto.Response>> getAllArticles(@RequestParam(value = "keyword", required = false) String keyword,
-                                                                    @RequestParam(value = "page", defaultValue = "0") int page,
-                                                                    @RequestParam(value = "size", defaultValue = "15") int size) {
+    public ResponseEntity<List<ArticleDto.Response>> getAllArticles(@RequestParam(required = false) String keyword,
+                                                                    @RequestParam(defaultValue = "0") Long  lastArticleId,
+                                                                    @RequestParam(defaultValue = "15") int size) {
         // 신규 등록 순으로 정렬
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<ArticleDto.Response> articles = articleService.getArticles(keyword, pageRequest);
+        PageRequest pageRequest = PageRequest.of(0, size, Sort.by("createdAt").descending());
+        List<ArticleDto.Response> articles = articleService.getArticles(lastArticleId, keyword, pageRequest);
         return ResponseEntity.ok(articles);
     }
     
     // 특정 게시글 보이기
     @GetMapping("/articles/{id}")
-    public ResponseEntity<ArticleDto.Response> getArticle(@PathVariable Long id, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+    public ResponseEntity<ArticleDto.Response> getArticle(@PathVariable Long id,
+                                                          @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
         ArticleDto.Response response = articleService.getArticle(id, authorizedMemberDto);
-        
         return ResponseEntity.ok(response);
     }
     
@@ -58,9 +57,8 @@ public class ArticleController {
     @PostMapping("/articles")
     public ResponseEntity<ArticleDto.Response> createArticle(@RequestPart("articleCreate") ArticleDto.Post postDto,
                                                              @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
-                                                             @RequestPart MultipartFile articleImg) {
+                                                             @RequestPart(required = false) MultipartFile articleImg) {
         ArticleDto.Response response = articleService.createArticle(authorizedMemberDto,postDto, articleImg);
-        
         return ResponseEntity.ok(response);
     }
     
@@ -68,7 +66,7 @@ public class ArticleController {
     public ResponseEntity<ArticleDto.Response> updateArticle(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
                                                              @PathVariable Long id,
                                                              @RequestPart("articleUpdate") ArticleDto.Patch patchDto,
-                                                             @RequestPart MultipartFile articleImg) {
+                                                             @RequestPart(required = false) MultipartFile articleImg) {
         
         ArticleDto.Response response = articleService.updateArticle(authorizedMemberDto, id, patchDto, articleImg);
         return ResponseEntity.ok(response);
@@ -83,13 +81,15 @@ public class ArticleController {
     }
     
     @PostMapping("/articles/{id}/like")
-    public ResponseEntity<Void> likeArticle(@PathVariable Long id, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+    public ResponseEntity<Void> likeArticle(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
+                                            @PathVariable Long id) {
         articleLikeService.likeArticle(authorizedMemberDto, id);
         return ResponseEntity.noContent().build();
     }
     
     @DeleteMapping("/articles/{id}/like")
-    public ResponseEntity<Void> unlikeArticle(@PathVariable Long id, @AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto) {
+    public ResponseEntity<Void> unlikeArticle(@AuthenticationPrincipal AuthorizedMemberDto authorizedMemberDto,
+                                              @PathVariable Long id) {
         articleLikeService.unlikeArticle(authorizedMemberDto, id);
         return ResponseEntity.ok().build();
     }
