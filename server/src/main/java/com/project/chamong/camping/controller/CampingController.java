@@ -41,7 +41,7 @@ public class CampingController {
 
     CampingApiService campingApiService;
     CampingApiMapper mapper;
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate;
     String servicekey = "9Oo%2BZ6xZdxKcsnKFsJI6eqFfkst%2BLrlJL5fuDTWxlA88jrbjhaaIsOUcgSRGRwcm%2FO%2FpZE%2FXSwpiBwxkBqXf%2FA%3D%3D";
     int numOfRows = 3990;
     int pageNo = 1;
@@ -49,9 +49,10 @@ public class CampingController {
     String mobileApp = "Chamong";
 
     public CampingController(CampingApiService campingApiService,
-                             CampingApiMapper mapper) {
+                             CampingApiMapper mapper, RestTemplate restTemplate) {
         this.campingApiService = campingApiService;
         this.mapper = mapper;
+        this.restTemplate = restTemplate;
     }
 
     // 고캠핑 API 저장
